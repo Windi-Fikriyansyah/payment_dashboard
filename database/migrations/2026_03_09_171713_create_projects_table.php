@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('projects', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama');
+            $table->string('slug')->unique();
+            $table->decimal('total_transaksi', 15, 2)->default(0);
+            $table->decimal('saldo_tertunda', 15, 2)->default(0);
+            $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
+            $table->enum('mode', ['Sandbox', 'Production'])->default('Sandbox');
+            $table->boolean('fee_by_merchant')->default(false);
+            $table->string('webhook_url')->nullable();
+            $table->string('notifikasi_ke')->nullable();
+            $table->string('api_key')->unique();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('projects');
+    }
+};
