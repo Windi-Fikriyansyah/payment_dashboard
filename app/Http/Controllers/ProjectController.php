@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Yajra\DataTables\Facades\DataTables;
 
 class ProjectController extends Controller
@@ -43,7 +45,7 @@ class ProjectController extends Controller
             'slug' => $slug,
             'webhook_url' => $request->webhook_url,
             'status' => 'Aktif',
-            'mode' => 'Sandbox',
+            'mode' => 'sandbox',
             'api_key' => 'SB_' . Str::random(40),
             'total_transaksi' => 0,
             'saldo_tertunda' => 0,
@@ -63,28 +65,32 @@ class ProjectController extends Controller
     {
         $projects = DB::table('projects')
             ->where('user_id', Auth::id())
-            ->select(['id', 'nama', 'slug', 'total_transaksi', 'status']);
+            ->select([
+                'id', 
+                'nama', 
+                'slug', 
+                'status',
+                'mode',
+                DB::raw('(SELECT COALESCE(SUM(CASE WHEN ledgers.type = \'credit\' THEN ledgers.amount ELSE 0 END) - SUM(CASE WHEN ledgers.type = \'debit\' THEN ledgers.amount ELSE 0 END), 0) FROM ledgers JOIN transactions ON ledgers.transaction_id = transactions.id WHERE ledgers.project_id = projects.id AND transactions.status = \'success\' AND transactions.mode = projects.mode) as total_transaksi')
+            ]);
 
         return DataTables::of($projects)
             ->addColumn('total_transaksi_format', function($row) {
                 return 'Rp ' . number_format($row->total_transaksi, 0, ',', '.');
             })
             ->addColumn('aksi', function($row) {
-                $detailBtn = '<a href="' . route('proyek.show', $row->id) . '" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg text-xs font-bold hover:bg-blue-600 hover:text-white transition-colors dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white">' .
+                $encrypted_id = Crypt::encryptString($row->id);
+                $detailBtn = '<a href="' . route('proyek.show', $encrypted_id) . '" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg text-xs font-bold hover:bg-blue-100 hover:text-blue-700 transition-colors dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-800 dark:hover:text-blue-300">' .
                                 '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>' .
                                 'Detail' .
                              '</a>';
 
-                $deleteBtn = '<form action="' . route('proyek.destroy', $row->id) . '" method="POST" class="inline-block form-delete">' .
-                                csrf_field() .
-                                method_field('DELETE') .
-                                '<button type="button" class="btn-delete inline-flex items-center px-3 py-1.5 bg-rose-50 text-rose-600 border border-rose-200 rounded-lg text-xs font-bold hover:bg-rose-600 hover:text-white transition-colors dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 dark:hover:bg-rose-600 dark:hover:text-white">' .
-                                    '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>' .
-                                    'Hapus' .
-                                '</button>' .
-                             '</form>';
+                $paymentBtn = '<a href="' . route('proyek.pembayaran', $encrypted_id) . '" class="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg text-xs font-bold hover:bg-emerald-100 hover:text-emerald-700 transition-colors dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-800 dark:hover:text-emerald-300">' .
+                                '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>' .
+                                'Pembayaran' .
+                             '</a>';
 
-                return '<div class="flex items-center justify-center gap-2">' . $detailBtn . $deleteBtn . '</div>';
+                return '<div class="flex items-center justify-center gap-2">' . $detailBtn . $paymentBtn . '</div>';
             })
             ->rawColumns(['aksi'])
             ->make(true);
@@ -93,16 +99,28 @@ class ProjectController extends Controller
     /**
      * Show details of a specific project.
      */
-    public function show($id)
+    public function show($id_encrypted)
     {
+        try {
+            $id = Crypt::decryptString($id_encrypted);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
         $project = DB::table('projects')
-            ->where('id', $id)
-            ->where('user_id', Auth::id())
+            ->where('projects.id', $id)
+            ->where('projects.user_id', Auth::id())
+            ->select([
+                'projects.*',
+                DB::raw('(SELECT COALESCE(SUM(CASE WHEN ledgers.type = \'credit\' THEN ledgers.amount ELSE 0 END) - SUM(CASE WHEN ledgers.type = \'debit\' THEN ledgers.amount ELSE 0 END), 0) FROM ledgers JOIN transactions ON ledgers.transaction_id = transactions.id WHERE ledgers.project_id = projects.id AND transactions.status = \'success\' AND transactions.mode = projects.mode) as total_transaksi')
+            ])
             ->first();
 
         if (!$project) {
             abort(404);
         }
+
+        $project->encrypted_id = $id_encrypted;
 
         return view('proyek.show', compact('project'));
     }
@@ -111,8 +129,14 @@ class ProjectController extends Controller
      * Update project (e.g., toggle mode).
      * Added extra logic here per user prompt: api key changes on production mode.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id_encrypted)
     {
+        try {
+            $id = Crypt::decryptString($id_encrypted);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
         $project = DB::table('projects')
             ->where('id', $id)
             ->where('user_id', Auth::id())
@@ -128,10 +152,10 @@ class ProjectController extends Controller
             $mode = $request->mode;
             $apiKey = $project->api_key;
 
-            // User requirement: apikey changed when switching to Production or within Production
-            if ($mode === 'Production' && $project->mode !== 'Production') {
+            // User requirement: apikey changed when switching to production or within production
+            if ($mode === 'production' && $project->mode !== 'production') {
                 $apiKey = 'PK_' . Str::random(40);
-            } elseif ($mode === 'Sandbox' && $project->mode !== 'Sandbox') {
+            } elseif ($mode === 'sandbox' && $project->mode !== 'sandbox') {
                 $apiKey = 'SB_' . Str::random(40);
             }
 
@@ -168,8 +192,14 @@ class ProjectController extends Controller
     /**
      * Delete a specific project.
      */
-    public function destroy($id)
+    public function destroy($id_encrypted)
     {
+        try {
+            $id = Crypt::decryptString($id_encrypted);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
         $project = DB::table('projects')
             ->where('id', $id)
             ->where('user_id', Auth::id())
@@ -182,5 +212,96 @@ class ProjectController extends Controller
         DB::table('projects')->where('id', $id)->delete();
 
         return redirect()->route('proyek.index')->with('success', 'Proyek berhasil dihapus!');
+    }
+
+    /**
+     * Show manage payment methods page for a specific project.
+     */
+    public function paymentMethods($id_encrypted)
+    {
+        try {
+            $id = Crypt::decryptString($id_encrypted);
+        } catch (DecryptException $e) {
+            abort(404);
+        }
+
+        $project = DB::table('projects')
+            ->where('id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$project) {
+            abort(404);
+        }
+
+        $project->encrypted_id = $id_encrypted;
+
+        // Get all active payment methods and check current project's status
+        $payment_methods = DB::table('payment_methods')
+            ->where('is_active', true)
+            ->get()
+            ->map(function($method) use ($id) {
+                // Cast to int for safe comparison
+                $method->is_enabled = DB::table('project_payment_methods')
+                    ->where('project_id', (int)$id)
+                    ->where('payment_method_id', (int)$method->id)
+                    ->exists();
+                return $method;
+            });
+
+        return view('proyek.pembayaran', compact('project', 'payment_methods'));
+    }
+
+    /**
+     * Toggle a payment method for a specific project.
+     */
+    public function togglePaymentMethod(Request $request, $id_encrypted)
+    {
+        try {
+            $id = Crypt::decryptString($id_encrypted);
+        } catch (DecryptException $e) {
+            return response()->json(['success' => false, 'message' => 'Invalid ID'], 404);
+        }
+
+        $project = DB::table('projects')
+            ->where('id', $id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if (!$project) {
+            return response()->json(['success' => false, 'message' => 'Project not found'], 404);
+        }
+
+        $method_id = (int) $request->payment_method_id;
+        
+        $already_linked = DB::table('project_payment_methods')
+            ->where('project_id', (int)$id)
+            ->where('payment_method_id', $method_id)
+            ->first();
+
+        if ($already_linked) {
+            // "OFF": remove from project_payment_methods
+            DB::table('project_payment_methods')
+                ->where('project_id', (int)$id)
+                ->where('payment_method_id', $method_id)
+                ->delete();
+            $new_status = false;
+            $message = 'Metode pembayaran dinonaktifkan untuk proyek ini.';
+        } else {
+            // "ON": add to project_payment_methods
+            DB::table('project_payment_methods')->insert([
+                'project_id' => (int)$id,
+                'payment_method_id' => $method_id,
+                'created_at' => now(),
+            ]);
+            $new_status = true;
+            $message = 'Metode pembayaran diaktifkan untuk proyek ini.';
+        }
+
+        return response()->json([
+            'success' => true,
+            'is_enabled' => $new_status,
+            'message' => $message
+        ]);
     }
 }

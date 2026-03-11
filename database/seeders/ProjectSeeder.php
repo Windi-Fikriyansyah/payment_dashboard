@@ -34,7 +34,7 @@ class ProjectSeeder extends Seeder
                 'nama' => 'Piknikyuk',
                 'slug' => 'piknikyuk',
                 'status' => 'Aktif',
-                'mode' => 'Sandbox',
+                'mode' => 'sandbox',
                 'total_transaksi' => 500000,
                 'saldo_tertunda' => 25000,
                 'fee_by_merchant' => true,

@@ -26,6 +26,7 @@
                         <tr>
                             <th class="px-6 py-4 font-bold">Nama</th>
                             <th class="px-6 py-4 font-bold">Slug</th>
+                            <th class="px-6 py-4 font-bold">Mode</th>
                             <th class="px-6 py-4 font-bold">Total Transaksi</th>
                             <th class="px-6 py-4 font-bold">Status</th>
                             <th class="px-6 py-4 font-bold text-center">Aksi</th>
@@ -133,6 +134,14 @@
                         name: 'slug',
                         render: function(data) {
                             return `<span class="px-2.5 py-1 text-xs font-mono font-medium text-gray-600 bg-gray-100 border border-gray-200 rounded-lg dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700">${data}</span>`;
+                        }
+                    },
+                    { 
+                        data: 'mode', 
+                        name: 'mode',
+                        render: function(data) {
+                            var color = data === 'Production' ? 'rose' : 'blue';
+                            return `<span class="px-2 py-1 bg-${color}-100 text-${color}-600 rounded-lg text-xs font-bold">${data}</span>`;
                         }
                     },
                     { 

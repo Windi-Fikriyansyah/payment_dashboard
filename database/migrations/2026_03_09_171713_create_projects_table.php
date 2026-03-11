@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('total_transaksi', 15, 2)->default(0);
             $table->decimal('saldo_tertunda', 15, 2)->default(0);
             $table->enum('status', ['Aktif', 'Nonaktif'])->default('Aktif');
-            $table->enum('mode', ['Sandbox', 'Production'])->default('Sandbox');
+            $table->enum('mode', ['sandbox', 'production'])->default('sandbox');
             $table->boolean('fee_by_merchant')->default(false);
             $table->string('webhook_url')->nullable();
             $table->string('notifikasi_ke')->nullable();

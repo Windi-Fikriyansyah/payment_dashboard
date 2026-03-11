@@ -49,7 +49,7 @@
                             <span class="text-sm font-bold {{ $project->status === 'Aktif' ? 'text-emerald-600' : 'text-rose-600' }}">
                                 {{ $project->status === 'Aktif' ? 'Ya' : 'Tidak' }}
                             </span>
-                            <form action="{{ route('proyek.update', $project->id) }}" method="POST">
+                    <form action="{{ route('proyek.update', $project->encrypted_id) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="status" value="{{ $project->status === 'Aktif' ? 'Nonaktif' : 'Aktif' }}">
                                 <button type="submit" class="text-xs text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 px-3 py-1.5 rounded-lg font-bold hover:scale-105 transition-transform active:scale-95 shadow-md">
@@ -61,12 +61,12 @@
                     <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-900/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 my-2">
                         <span class="text-gray-500 font-medium whitespace-nowrap">Mode:</span>
                         <div class="flex items-center gap-3">
-                            <span class="text-sm font-bold {{ $project->mode === 'Production' ? 'text-rose-600' : 'text-blue-600' }}">
+                            <span class="text-sm font-bold {{ $project->mode === 'production' ? 'text-rose-600' : 'text-blue-600' }}">
                                 {{ $project->mode }}
                             </span>
-                            <form action="{{ route('proyek.update', $project->id) }}" method="POST">
+                    <form action="{{ route('proyek.update', $project->encrypted_id) }}" method="POST">
                                 @csrf
-                                <input type="hidden" name="mode" value="{{ $project->mode === 'Production' ? 'Sandbox' : 'Production' }}">
+                                <input type="hidden" name="mode" value="{{ $project->mode === 'production' ? 'sandbox' : 'production' }}">
                                 <button type="submit" class="text-xs text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 px-3 py-1.5 rounded-lg font-bold hover:scale-105 transition-transform active:scale-95 shadow-md">
                                     Switch
                                 </button>
@@ -77,17 +77,17 @@
                         <span class="text-gray-500 font-medium whitespace-nowrap">Total Transaksi:</span>
                         <span class="text-gray-900 dark:text-white font-bold">Rp {{ number_format($project->total_transaksi, 0, ',', '.') }}</span>
                     </div>
-                    <div class="flex justify-between items-center">
+                    <!-- <div class="flex justify-between items-center">
                         <span class="text-gray-500 font-medium whitespace-nowrap">Saldo Tertunda:</span>
                         <span class="text-gray-900 dark:text-white font-bold">Rp {{ number_format($project->saldo_tertunda, 0, ',', '.') }}</span>
-                    </div>
+                    </div> -->
                     <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-900/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 my-2">
                         <span class="text-gray-500 font-medium whitespace-nowrap">Fee By Merchant:</span>
                         <div class="flex items-center gap-3">
                             <span class="text-sm font-bold {{ $project->fee_by_merchant ? 'text-emerald-600' : 'text-gray-500' }}">
                                 {{ $project->fee_by_merchant ? 'Ya' : 'Tidak' }}
                             </span>
-                            <form action="{{ route('proyek.update', $project->id) }}" method="POST">
+                    <form action="{{ route('proyek.update', $project->encrypted_id) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="fee_by_merchant" value="{{ $project->fee_by_merchant ? 0 : 1 }}">
                                 <button type="submit" class="text-xs text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 px-3 py-1.5 rounded-lg font-bold hover:scale-105 transition-transform active:scale-95 shadow-md">
@@ -158,15 +158,22 @@
                                 </div>
                             </div>
                             <div class="flex items-center justify-between">
-                                <p class="text-[10px] text-gray-500 italic">API Key otomatis berubah saat beralih ke Mode Production untuk keamanan tambahan.</p>
+                                <p class="text-[10px] text-gray-500 italic">API Key otomatis berubah saat beralih ke Mode production untuk keamanan tambahan.</p>
                                 <span x-show="apiKeyCopied" x-transition class="text-xs text-emerald-400 font-bold ml-2">Berhasil disalin!</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="pt-6 relative z-10 border-t border-white/5">
-                    <p class="text-sm text-gray-400">Pastikan untuk tidak membagikan API Key Anda kepada publik. Mode Production menggunakan kredensial yang berbeda dengan Mode Sandbox.</p>
+                <div class="pt-6 relative z-10 border-t border-white/5 flex flex-col gap-4">
+                    <p class="text-sm text-gray-400">Pastikan untuk tidak membagikan API Key Anda kepada publik. Mode production menggunakan kredensial yang berbeda dengan Mode sandbox.</p>
+                    
+                    <a href="{{ route('proyek.pembayaran', $project->encrypted_id) }}" class="inline-flex items-center justify-center gap-2 w-full px-6 py-4 bg-white text-gray-900 rounded-2xl font-bold hover:bg-blue-500 hover:text-white transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                        Atur Metode Pembayaran
+                    </a>
                 </div>
             </div>
         </div>
@@ -213,7 +220,7 @@
                         </button>
                     </div>
 
-                    <form action="{{ route('proyek.update', $project->id) }}" method="POST">
+                    <form action="{{ route('proyek.update', $project->encrypted_id) }}" method="POST">
                         @csrf
                         <div class="p-6 space-y-5 max-h-[60vh] overflow-y-auto">
                             <div>
@@ -233,8 +240,8 @@
                                 <div>
                                     <label for="mode_edit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Mode</label>
                                     <select name="mode" id="mode_edit" class="mt-2 block w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white px-4 py-3">
-                                        <option value="Sandbox" {{ $project->mode === 'Sandbox' ? 'selected' : '' }}>Sandbox</option>
-                                        <option value="Production" {{ $project->mode === 'Production' ? 'selected' : '' }}>Production</option>
+                                        <option value="sandbox" {{ $project->mode === 'sandbox' ? 'selected' : '' }}>sandbox</option>
+                                        <option value="production" {{ $project->mode === 'production' ? 'selected' : '' }}>production</option>
                                     </select>
                                 </div>
                             </div>
