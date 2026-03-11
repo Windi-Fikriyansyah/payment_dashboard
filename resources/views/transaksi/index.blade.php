@@ -16,11 +16,18 @@
                 @endforeach
             </select>
 
+            <select id="filter-mode" class="bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-2.5 pr-10 dark:bg-gray-800 dark:border-gray-700 dark:text-white shadow-sm outline-none cursor-pointer">
+                <option value="">Semua Mode</option>
+                <option value="sandbox">Sandbox</option>
+                <option value="production">Production</option>
+            </select>
+
             <select id="filter-status" class="bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-2.5 pr-10 dark:bg-gray-800 dark:border-gray-700 dark:text-white shadow-sm outline-none cursor-pointer">
                 <option value="">Semua Status</option>
-                <option value="Success">Success</option>
-                <option value="Pending">Pending</option>
-                <option value="Failed">Failed</option>
+                <option value="success">Success</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+                <option value="expired">Expired</option>
             </select>
         </div>
 
@@ -32,8 +39,10 @@
                         <tr>
                             <th class="px-6 py-4 font-bold">Tanggal</th>
                             <th class="px-6 py-4 font-bold">Order ID</th>
+                            <th class="px-6 py-4 font-bold">Mode</th>
+                            <th class="px-6 py-4 font-bold">Metode</th>
+                            <th class="px-6 py-4 font-bold">Total Bayar</th>
                             <th class="px-6 py-4 font-bold">Status</th>
-                            <th class="px-6 py-4 font-bold">Jumlah</th>
                             <th class="px-6 py-4 font-bold">Proyek</th>
                         </tr>
                     </thead>
@@ -85,15 +94,16 @@
                     url: '{{ route("transaksi.data") }}',
                     data: function (d) {
                         d.status = $('#filter-status').val();
+                        d.mode = $('#filter-mode').val();
                         d.project_id = $('#filter-project').val();
                     }
                 },
                 columns: [
                     { 
                         data: 'tanggal_format', 
-                        name: 'tanggal',
+                        name: 'created_at',
                         render: function(data) {
-                            return `<span class="text-gray-600 dark:text-gray-400 font-medium">${data}</span>`;
+                            return `<span class="text-gray-600 dark:text-gray-400 font-medium whitespace-nowrap">${data}</span>`;
                         }
                     },
                     { 
@@ -104,15 +114,26 @@
                         }
                     },
                     { 
-                        data: 'status_badge', 
-                        name: 'status'
+                        data: 'mode_badge', 
+                        name: 'mode'
                     },
                     { 
-                        data: 'jumlah_format', 
-                        name: 'jumlah',
+                        data: 'payment_method', 
+                        name: 'payment_method',
+                        render: function(data) {
+                            return `<span class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-[10px] font-bold uppercase">${data || 'N/A'}</span>`;
+                        }
+                    },
+                    { 
+                        data: 'total_format', 
+                        name: 'total_payment',
                         render: function(data) {
                             return `<span class="font-bold text-gray-900 dark:text-white">${data}</span>`;
                         }
+                    },
+                    { 
+                        data: 'status_badge', 
+                        name: 'status'
                     },
                     { 
                         data: 'nama_proyek', 
@@ -122,14 +143,14 @@
                         }
                     }
                 ],
-                order: [[0, 'desc']], // Default order by Tanggal
+                order: [[0, 'desc']], // Default order by created_at
                 initComplete: function() {
                     $('#custom-filters').removeClass('hidden').addClass('flex').prependTo('.dataTables_filter');
                 }
             });
 
             // Trigger reload when filters change
-            $('#filter-status, #filter-project').on('change', function() {
+            $('#filter-status, #filter-mode, #filter-project').on('change', function() {
                 table.ajax.reload();
             });
         });

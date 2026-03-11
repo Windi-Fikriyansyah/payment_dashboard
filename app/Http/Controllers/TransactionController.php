@@ -29,16 +29,28 @@ class TransactionController extends Controller
             ->where('projects.user_id', Auth::id())
             ->select([
                 'transactions.id',
-                'transactions.tanggal',
+                'transactions.project_id',
                 'transactions.order_id',
+                'transactions.reference',
+                'transactions.amount',
+                'transactions.fee',
+                'transactions.total_payment',
                 'transactions.status',
-                'transactions.jumlah',
+                'transactions.payment_method',
+                'transactions.payment_number',
+                'transactions.created_at',
+                'transactions.mode',
                 'projects.nama as nama_proyek'
             ]);
 
         // Filter by Status
         if ($request->filled('status')) {
             $transactions->where('transactions.status', $request->status);
+        }
+
+        // Filter by Mode
+        if ($request->filled('mode')) {
+            $transactions->where('transactions.mode', $request->mode);
         }
 
         // Filter by Project
@@ -48,10 +60,16 @@ class TransactionController extends Controller
 
         return DataTables::of($transactions)
             ->addColumn('tanggal_format', function($row) {
-                return date('d M Y, H:i', strtotime($row->tanggal));
+                return date('d M Y, H:i', strtotime($row->created_at));
             })
-            ->addColumn('jumlah_format', function($row) {
-                return 'Rp ' . number_format($row->jumlah, 0, ',', '.');
+            ->addColumn('amount_format', function($row) {
+                return 'Rp ' . number_format($row->amount, 0, ',', '.');
+            })
+            ->addColumn('fee_format', function($row) {
+                return 'Rp ' . number_format($row->fee, 0, ',', '.');
+            })
+            ->addColumn('total_format', function($row) {
+                return 'Rp ' . number_format($row->total_payment, 0, ',', '.');
             })
             ->addColumn('status_badge', function($row) {
                 $color = 'gray';
@@ -66,11 +84,14 @@ class TransactionController extends Controller
                 
                 return '<span class="px-2.5 py-1 bg-' . $color . '-100 text-' . $color . '-600 rounded-lg text-xs font-bold uppercase tracking-wide">' . $row->status . '</span>';
             })
-            ->filterColumn('tanggal', function($query, $keyword) {
-                // Gunakan TO_CHAR yang kompatibel dengan PostgreSQL alih-alih DATE_FORMAT(MySQL)
-                $query->whereRaw("TO_CHAR(transactions.tanggal, 'DD Mon YYYY') ILIKE ?", ["%{$keyword}%"]);
+            ->addColumn('mode_badge', function($row) {
+                $color = strtolower($row->mode) === 'production' ? 'rose' : 'blue';
+                return '<span class="px-2 py-0.5 bg-' . $color . '-100 text-' . $color . '-600 rounded-md text-[10px] font-bold uppercase">' . $row->mode . '</span>';
             })
-            ->rawColumns(['status_badge'])
+            ->filterColumn('created_at', function($query, $keyword) {
+                $query->whereRaw("TO_CHAR(transactions.created_at, 'DD Mon YYYY') ILIKE ?", ["%{$keyword}%"]);
+            })
+            ->rawColumns(['status_badge', 'mode_badge'])
             ->make(true);
     }
 }
