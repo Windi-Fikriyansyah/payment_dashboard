@@ -1,0 +1,174 @@
+﻿Array
+(
+    [0] => stdClass Object
+        (
+            [column_name] => id
+            [data_type] => integer
+        )
+
+    [1] => stdClass Object
+        (
+            [column_name] => project_id
+            [data_type] => integer
+        )
+
+    [2] => stdClass Object
+        (
+            [column_name] => order_id
+            [data_type] => character varying
+        )
+
+    [3] => stdClass Object
+        (
+            [column_name] => reference
+            [data_type] => character varying
+        )
+
+    [4] => stdClass Object
+        (
+            [column_name] => amount
+            [data_type] => numeric
+        )
+
+    [5] => stdClass Object
+        (
+            [column_name] => fee
+            [data_type] => numeric
+        )
+
+    [6] => stdClass Object
+        (
+            [column_name] => total_payment
+            [data_type] => numeric
+        )
+
+    [7] => stdClass Object
+        (
+            [column_name] => status
+            [data_type] => character varying
+        )
+
+    [8] => stdClass Object
+        (
+            [column_name] => payment_method
+            [data_type] => character varying
+        )
+
+    [9] => stdClass Object
+        (
+            [column_name] => payment_number
+            [data_type] => text
+        )
+
+    [10] => stdClass Object
+        (
+            [column_name] => created_at
+            [data_type] => timestamp without time zone
+        )
+
+    [11] => stdClass Object
+        (
+            [column_name] => updated_at
+            [data_type] => timestamp without time zone
+        )
+
+    [12] => stdClass Object
+        (
+            [column_name] => mode
+            [data_type] => character varying
+        )
+
+    [13] => stdClass Object
+        (
+            [column_name] => duitku_order_id
+            [data_type] => character varying
+        )
+
+)
+Array
+(
+    [0] => stdClass Object
+        (
+            [column_name] => id
+            [data_type] => integer
+        )
+
+    [1] => stdClass Object
+        (
+            [column_name] => project_id
+            [data_type] => integer
+        )
+
+    [2] => stdClass Object
+        (
+            [column_name] => order_id
+            [data_type] => character varying
+        )
+
+    [3] => stdClass Object
+        (
+            [column_name] => reference
+            [data_type] => character varying
+        )
+
+    [4] => stdClass Object
+        (
+            [column_name] => amount
+            [data_type] => numeric
+        )
+
+    [5] => stdClass Object
+        (
+            [column_name] => fee
+            [data_type] => numeric
+        )
+
+    [6] => stdClass Object
+        (
+            [column_name] => total_payment
+            [data_type] => numeric
+        )
+
+    [7] => stdClass Object
+        (
+            [column_name] => status
+            [data_type] => character varying
+        )
+
+    [8] => stdClass Object
+        (
+            [column_name] => payment_method
+            [data_type] => character varying
+        )
+
+    [9] => stdClass Object
+        (
+            [column_name] => payment_number
+            [data_type] => text
+        )
+
+    [10] => stdClass Object
+        (
+            [column_name] => created_at
+            [data_type] => timestamp without time zone
+        )
+
+    [11] => stdClass Object
+        (
+            [column_name] => updated_at
+            [data_type] => timestamp without time zone
+        )
+
+    [12] => stdClass Object
+        (
+            [column_name] => mode
+            [data_type] => character varying
+        )
+
+    [13] => stdClass Object
+        (
+            [column_name] => duitku_order_id
+            [data_type] => character varying
+        )
+
+)
