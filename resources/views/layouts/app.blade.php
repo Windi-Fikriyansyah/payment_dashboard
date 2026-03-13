@@ -73,7 +73,7 @@
 
                         <div class="pt-4 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider px-3">Integrasi</div>
 
-                        <x-nav-link-custom href="#" :active="false">
+                        <x-nav-link-custom href="{{route('transaksi_api.index')}}" :active="request()->routeIs('transaksi_api.*')">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                             </svg>

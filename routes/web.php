@@ -32,6 +32,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/transaksi', [\App\Http\Controllers\TransactionController::class, 'index'])->name('transaksi.index');
     Route::get('/transaksi/data', [\App\Http\Controllers\TransactionController::class, 'data'])->name('transaksi.data');
     Route::get('/transaksi/{id}', [\App\Http\Controllers\TransactionController::class, 'show'])->name('transaksi.show');
+
+    // Transaksi API
+    Route::get('/transaksi-api', [\App\Http\Controllers\TransactionControllerApi::class, 'index'])->name('transaksi_api.index');
+    Route::get('/transaksi-api/data', [\App\Http\Controllers\TransactionControllerApi::class, 'data'])->name('transaksi_api.data');
+    Route::get('/transaksi-api/{id}', [\App\Http\Controllers\TransactionControllerApi::class, 'show'])->name('transaksi_api.show');
 });
 
 require __DIR__.'/auth.php';
