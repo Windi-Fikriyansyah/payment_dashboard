@@ -37,6 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/transaksi-api', [\App\Http\Controllers\TransactionControllerApi::class, 'index'])->name('transaksi_api.index');
     Route::get('/transaksi-api/data', [\App\Http\Controllers\TransactionControllerApi::class, 'data'])->name('transaksi_api.data');
     Route::get('/transaksi-api/{id}', [\App\Http\Controllers\TransactionControllerApi::class, 'show'])->name('transaksi_api.show');
+
+    // Rekening Bank
+    Route::get('/rekening-bank', [\App\Http\Controllers\RekeningBankController::class, 'index'])->name('rekening.index');
+    Route::get('/rekening-bank/data', [\App\Http\Controllers\RekeningBankController::class, 'data'])->name('rekening.data');
+    Route::post('/rekening-bank', [\App\Http\Controllers\RekeningBankController::class, 'store'])->name('rekening.store');
+    Route::delete('/rekening-bank/{id}', [\App\Http\Controllers\RekeningBankController::class, 'destroy'])->name('rekening.destroy');
 });
 
 require __DIR__.'/auth.php';
