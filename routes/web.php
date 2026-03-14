@@ -43,6 +43,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/rekening-bank/data', [\App\Http\Controllers\RekeningBankController::class, 'data'])->name('rekening.data');
     Route::post('/rekening-bank', [\App\Http\Controllers\RekeningBankController::class, 'store'])->name('rekening.store');
     Route::delete('/rekening-bank/{id}', [\App\Http\Controllers\RekeningBankController::class, 'destroy'])->name('rekening.destroy');
+
+    // Penarikan
+    Route::get('/penarikan', [\App\Http\Controllers\PenarikanController::class, 'index'])->name('penarikan.index');
+    Route::get('/penarikan/data', [\App\Http\Controllers\PenarikanController::class, 'data'])->name('penarikan.data');
 });
 
 require __DIR__.'/auth.php';
