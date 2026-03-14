@@ -71,7 +71,7 @@ class ProjectController extends Controller
                 'slug', 
                 'status',
                 'mode',
-                DB::raw('(SELECT COALESCE(SUM(CASE WHEN ledgers.type = \'credit\' THEN ledgers.amount ELSE 0 END) - SUM(CASE WHEN ledgers.type = \'debit\' THEN ledgers.amount ELSE 0 END), 0) FROM ledgers JOIN transactions ON ledgers.transaction_id = transactions.id WHERE ledgers.project_id = projects.id AND transactions.status = \'success\' AND transactions.mode = projects.mode) as total_transaksi')
+                DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = projects.mode AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = projects.mode AND l.type = \'debit\')) as total_transaksi')
             ]);
 
         return DataTables::of($projects)
@@ -112,7 +112,7 @@ class ProjectController extends Controller
             ->where('projects.user_id', Auth::id())
             ->select([
                 'projects.*',
-                DB::raw('(SELECT COALESCE(SUM(CASE WHEN ledgers.type = \'credit\' THEN ledgers.amount ELSE 0 END) - SUM(CASE WHEN ledgers.type = \'debit\' THEN ledgers.amount ELSE 0 END), 0) FROM ledgers JOIN transactions ON ledgers.transaction_id = transactions.id WHERE ledgers.project_id = projects.id AND transactions.status = \'success\' AND transactions.mode = projects.mode) as total_transaksi')
+                DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = projects.mode AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = projects.mode AND l.type = \'debit\')) as total_transaksi')
             ])
             ->first();
 

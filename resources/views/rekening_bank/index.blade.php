@@ -176,14 +176,26 @@
     </script>
 
     <style>
-        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_length select {
+            @apply bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 py-1.5 pl-3 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white shadow-sm transition-all;
+            padding-right: 1.8rem !important;
+            min-width: 3.5rem !important;
+            background-position: right 0.4rem center !important;
+            outline: none;
+        }
         .dataTables_wrapper .dataTables_filter input {
-            @apply bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-2 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white shadow-sm transition-all;
+            @apply bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-2 ml-2 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white shadow-sm transition-all;
             outline: none;
         }
         .dataTables_wrapper .dataTables_length,
         .dataTables_wrapper .dataTables_filter {
-            @apply mb-6 text-sm text-gray-600 dark:text-gray-400;
+            @apply text-sm text-gray-600 dark:text-gray-400;
+            margin-bottom: 20px !important;
+        }
+        table.dataTable {
+            margin-top: 20px !important;
+            border-spacing: 0;
+            clear: both;
         }
 
         /* Select2 Tailwind styling */
