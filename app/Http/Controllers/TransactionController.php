@@ -15,9 +15,16 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $projects = DB::table('projects')->where('user_id', Auth::id())->get(['id', 'nama', 'slug']);
+        $projects = DB::table('projects')
+            ->where('user_id', Auth::id())
+            ->get(['id', 'nama', 'slug']);
 
-        return view('transaksi.index', compact('projects'));
+        $projects_production = DB::table('projects')
+            ->where('user_id', Auth::id())
+            ->where('mode', 'production')
+            ->get(['id', 'nama', 'slug']);
+
+        return view('transaksi.index', compact('projects', 'projects_production'));
     }
 
     /**

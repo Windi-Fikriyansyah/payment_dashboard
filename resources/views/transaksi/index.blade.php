@@ -136,7 +136,7 @@
                                     <select id="modal-project-id"
                                         class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white shadow-sm outline-none transition-all">
                                         <option value="" disabled selected>Pilih Proyek...</option>
-                                        @foreach ($projects as $project)
+                                        @foreach ($projects_production as $project)
                                             <option value="{{ $project->id }}" data-slug="{{ $project->slug }}">
                                                 {{ $project->nama }}</option>
                                         @endforeach

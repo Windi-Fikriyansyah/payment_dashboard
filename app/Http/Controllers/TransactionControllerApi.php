@@ -15,7 +15,9 @@ class TransactionControllerApi extends Controller
      */
     public function index()
     {
-        $projects = DB::table('projects')->where('user_id', Auth::id())->get(['id', 'nama', 'slug']);
+        $projects = DB::table('projects')
+            ->where('user_id', Auth::id())
+            ->get(['id', 'nama', 'slug']);
 
         return view('transaksi_api.index', compact('projects'));
     }

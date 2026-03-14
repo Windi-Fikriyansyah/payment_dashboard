@@ -20,11 +20,11 @@ class PenarikanController extends Controller
         $user_id = Auth::id();
         $projects = DB::table('projects')
             ->where('user_id', $user_id)
-            ->where('mode', 'production')
             ->select([
                 'id', 
                 'nama',
-                DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = projects.mode AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = projects.mode AND l.type = \'debit\')) as saldo')
+                'mode',
+                DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = \'production\' AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = \'production\' AND l.type = \'debit\')) as saldo')
             ])
             ->get();
         $bank_accounts = DB::table('rekening_bank')->where('user_id', $user_id)->get(['id', 'bank_name', 'account_number', 'account_name']);
@@ -59,11 +59,8 @@ class PenarikanController extends Controller
             if (!$project) {
                 return response()->json(['success' => false, 'message' => 'Proyek tidak ditemukan'], 404);
             }
-
-            // Check if project is in production mode
-            if ($project->mode !== 'production') {
-                return response()->json(['success' => false, 'message' => 'Penarikan hanya diperbolehkan untuk proyek dalam mode Production.'], 403);
-            }
+            // Balance is always based on Production mode
+            $target_mode = 'production';
 
             // 2. Lock bank account
             $bank_account = DB::table('rekening_bank')
@@ -76,20 +73,20 @@ class PenarikanController extends Controller
             }
 
             // 3. Calculate current balance
-            // Credits: only from success transactions in the current mode
+            // Credits: only from success transactions in Production mode
             $credits = DB::table('ledgers')
                 ->join('transactions', 'ledgers.transaction_id', '=', 'transactions.id')
                 ->where('ledgers.project_id', $project_id)
                 ->where('transactions.status', 'success')
-                ->where('transactions.mode', $project->mode)
+                ->where('transactions.mode', $target_mode)
                 ->where('ledgers.type', 'credit')
                 ->sum('ledgers.amount');
 
-            // Debits: join with penarikan table to match mode
+            // Debits: join with penarikan table filtered by Production mode
             $debits = DB::table('ledgers')
                 ->join('penarikan', 'ledgers.penarikan_id', '=', 'penarikan.id')
                 ->where('ledgers.project_id', $project_id)
-                ->where('penarikan.mode', $project->mode)
+                ->where('penarikan.mode', $target_mode)
                 ->where('penarikan.status', '!=', 'Ditolak')
                 ->where('ledgers.type', 'debit')
                 ->sum('ledgers.amount');
@@ -114,7 +111,7 @@ class PenarikanController extends Controller
                 'jumlah' => $amount,
                 'fee' => $fee,
                 'total_terima' => $net_amount,
-                'mode' => $project->mode,
+                'mode' => $target_mode,
                 'penerima' => $penerima,
                 'status' => 'Pending',
                 'created_at' => now(),

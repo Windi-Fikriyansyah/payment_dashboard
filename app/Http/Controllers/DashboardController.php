@@ -12,43 +12,56 @@ class DashboardController extends Controller
      * Display the dashboard overview.
      */
     public function index()
-    {
-        $user_id = Auth::id();
+{
+    $user_id = Auth::id();
 
-        // 1. Total Saldo (Production Mode only)
-        $stats = DB::table('projects')
-            ->where('user_id', $user_id)
-            ->where('mode', 'production')
-            ->select([
-                DB::raw('SUM((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = \'production\' AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = \'production\' AND l.type = \'debit\')) as total_saldo')
-            ])
-            ->first();
-        $total_saldo = $stats->total_saldo ?? 0;
+    // 1. Total Saldo (Production Only + User Login)
+    $stats = DB::table('ledgers as l')
+        ->leftJoin('transactions as t', 'l.transaction_id', '=', 't.id')
+        ->leftJoin('penarikan as p', 'l.penarikan_id', '=', 'p.id')
+        ->leftJoin('projects as pr', function ($join) {
+            $join->on('t.project_id', '=', 'pr.id')
+                 ->orOn('p.project_id', '=', 'pr.id');
+        })
+        ->where('pr.user_id', $user_id)
+        ->selectRaw("
+            SUM(
+                CASE 
+                    WHEN l.type = 'credit' AND t.status = 'success' AND t.mode = 'production' THEN l.amount
+                    WHEN l.type = 'debit' AND p.status != 'Ditolak' AND p.mode = 'production' THEN -l.amount
+                    ELSE 0
+                END
+            ) as total_saldo
+        ")
+        ->first();
 
-        // 2. Total Transaksi Berhasil (Production)
-        $total_transaksi = DB::table('transactions')
-            ->join('projects', 'transactions.project_id', '=', 'projects.id')
-            ->where('projects.user_id', $user_id)
-            ->where('transactions.status', 'success')
-            ->where('transactions.mode', 'production')
-            ->count();
+    $total_saldo = $stats->total_saldo ?? 0;
 
-        // 3. Penarikan Pending
-        $penarikan_pending = DB::table('penarikan')
-            ->where('user_id', $user_id)
-            ->where('status', 'Pending')
-            ->count();
+    // 2. Total Transaksi Berhasil (Production)
+    $total_transaksi = DB::table('transactions')
+        ->join('projects', 'transactions.project_id', '=', 'projects.id')
+        ->where('projects.user_id', $user_id)
+        ->where('transactions.status', 'success')
+        ->where('transactions.mode', 'production')
+        ->count();
 
-        // 4. Total Proyek
-        $total_proyek = DB::table('projects')
-            ->where('user_id', $user_id)
-            ->count();
+    // 3. Penarikan Pending
+    $penarikan_pending = DB::table('penarikan')
+        ->join('projects', 'penarikan.project_id', '=', 'projects.id')
+        ->where('projects.user_id', $user_id)
+        ->where('penarikan.status', 'Pending')
+        ->count();
 
-        return view('dashboard', [
-            'total_saldo' => $total_saldo,
-            'total_transaksi' => $total_transaksi,
-            'penarikan_pending' => $penarikan_pending,
-            'total_proyek' => $total_proyek
-        ]);
-    }
+    // 4. Total Proyek
+    $total_proyek = DB::table('projects')
+        ->where('user_id', $user_id)
+        ->count();
+
+    return view('dashboard', [
+        'total_saldo' => $total_saldo,
+        'total_transaksi' => $total_transaksi,
+        'penarikan_pending' => $penarikan_pending,
+        'total_proyek' => $total_proyek
+    ]);
+}
 }

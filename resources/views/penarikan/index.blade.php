@@ -6,7 +6,7 @@
     <div class="space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Riwayat Penarikan</h1>
-            @if($projects->count() > 0)
+           
                 <button id="btn-request-penarikan"
                     class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md transition-all duration-200 active:scale-95">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -14,7 +14,6 @@
                     </svg>
                     Request Penarikan
                 </button>
-            @endif
         </div>
 
         <!-- Warning Information Card -->
@@ -71,11 +70,11 @@
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Pilih Proyek</label>
                             <select name="project_id" id="project_id" class="select2-modal" required>
                                 <option value="">Pilih Proyek...</option>
-                                @forelse($projects as $project)
-                                    <option value="{{ $project->id }}" data-saldo="{{ $project->saldo }}">{{ $project->nama }}</option>
-                                @empty
-                                    <option value="" disabled>Tidak ada proyek mode Production</option>
-                                @endforelse
+                                @foreach($projects as $project)
+                                    <option value="{{ $project->id }}" data-saldo="{{ $project->saldo }}">
+                                        {{ $project->nama }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -159,7 +158,6 @@
                 });
             });
 
-            // Update saldo display when project selected
             $('#project_id').on('change', function() {
                 const selected = $(this).find('option:selected');
                 const saldo = selected.data('saldo');
