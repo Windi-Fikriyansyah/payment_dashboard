@@ -7,8 +7,8 @@
         <!-- Welcome Section -->
         <div class="bg-blue-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl shadow-blue-500/20">
             <div class="relative z-10">
-                <h1 class="text-3xl font-bold mb-2">Welcome back, {{ Auth::user()->name }}! 👋</h1>
-                <p class="text-blue-100 max-w-md">Your payment dashboard is looking great today. You have 3 pending transactions to review.</p>
+                <h1 class="text-3xl font-bold mb-2">Selamat Datang, {{ Auth::user()->name }}! 👋</h1>
+                <p class="text-blue-100 max-w-md">Dashboard pembayaran Anda sudah siap. Ada {{ $penarikan_pending }} permintaan penarikan yang perlu diproses.</p>
                 <div class="mt-6 flex gap-3">
                     <button class="px-5 py-2.5 bg-white text-blue-600 rounded-xl font-bold text-sm shadow-sm hover:bg-gray-50 transition-colors">View Reports</button>
                     <button class="px-5 py-2.5 bg-blue-500/50 text-white rounded-xl font-bold text-sm shadow-sm backdrop-blur-sm border border-blue-400/30 hover:bg-blue-500/70 transition-colors">Manage Payments</button>
@@ -31,11 +31,11 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Balance</h3>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">$45,285.00</p>
+                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Saldo Tersedia</h3>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">Rp {{ number_format($total_saldo, 0, ',', '.') }}</p>
                 <div class="mt-2 flex items-center gap-2 text-xs">
-                    <span class="text-emerald-500 font-bold">+12%</span>
-                    <span class="text-gray-400">from last month</span>
+                    <span class="text-emerald-500 font-bold">Produksi</span>
+                    <span class="text-gray-400">Total bersih semua proyek</span>
                 </div>
             </div>
 
@@ -48,11 +48,11 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Transactions</h3>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">1,240</p>
+                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Transaksi Berhasil</h3>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ number_format($total_transaksi, 0, ',', '.') }}</p>
                 <div class="mt-2 flex items-center gap-2 text-xs">
-                    <span class="text-emerald-500 font-bold">+8.4%</span>
-                    <span class="text-gray-400">from last month</span>
+                    <span class="text-emerald-500 font-bold">Produksi</span>
+                    <span class="text-gray-400">Total volume transaksi</span>
                 </div>
             </div>
 
@@ -65,11 +65,11 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">New Customers</h3>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">324</p>
+                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Penarikan Pending</h3>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ $penarikan_pending }}</p>
                 <div class="mt-2 flex items-center gap-2 text-xs">
-                    <span class="text-rose-500 font-bold">-2.1%</span>
-                    <span class="text-gray-400">from last week</span>
+                    <span class="text-amber-500 font-bold">Menunggu</span>
+                    <span class="text-gray-400">Perlu diproses malam ini</span>
                 </div>
             </div>
 
@@ -82,11 +82,11 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Conversion Rate</h3>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">3.24%</p>
+                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Proyek</h3>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ $total_proyek }}</p>
                 <div class="mt-2 flex items-center gap-2 text-xs">
-                    <span class="text-emerald-500 font-bold">+0.4%</span>
-                    <span class="text-gray-400">from last month</span>
+                    <span class="text-blue-500 font-bold">Aktif</span>
+                    <span class="text-gray-400">Sandbox & Produksi</span>
                 </div>
             </div>
         </div>
