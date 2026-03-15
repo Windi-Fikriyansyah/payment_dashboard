@@ -34,10 +34,9 @@
                    class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
                 <div class="h-full flex flex-col">
                     <!-- Sidebar Header -->
-                    <div class="h-16 flex items-center px-6 border-b border-gray-100 dark:border-gray-700">
-                        <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                             <img src="{{ asset('image/logo.webp') }}" alt="Logo" class="w-8 h-8 rounded-lg">
-                            <span class="text-xl font-bold text-gray-900 dark:text-white">{{ config('app.name') }}</span>
+                    <div class="h-24 flex items-center px-6 border-b border-gray-100 dark:border-gray-700">
+                        <a href="{{ route('dashboard') }}" class="flex items-center">
+                             <img src="{{ asset('image/logo.webp') }}" alt="Logo" class="w-16 h-16 rounded-lg">
                         </a>
                     </div>
 

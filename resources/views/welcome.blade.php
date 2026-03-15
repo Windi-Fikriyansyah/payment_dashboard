@@ -63,12 +63,16 @@
 <body class="bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
     <!-- Navbar -->
     <nav class="fixed top-0 w-full z-50 glass shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex items-center gap-2">
-                    <img src="{{ asset('image/logo.webp') }}" alt="PayLink Logo" class="h-10 w-auto">
-                    <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">PayLink</span>
-                </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+    
+    <div class="flex items-center">
+        <img src="{{ asset('image/logo.webp') }}" 
+             alt="Linkbayar Logo" 
+             class="h-36 w-auto -my-6">
+    </div>
+
+            
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center gap-8">
@@ -264,7 +268,7 @@
                                 <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
                                 <div class="w-3 h-3 rounded-full bg-green-500"></div>
                             </div>
-                            <pre class="text-blue-400">curl <span class="text-gray-400">-X POST</span> https://api.paylink.id/v1/transaction \</pre>
+                            <pre class="text-blue-400">curl <span class="text-gray-400">-X POST</span> https://app.linkbayar.my.id/api/transactioncreate \</pre>
                             <pre class="text-gray-400">  -H <span class="text-emerald-400">"Authorization: Bearer YOUR_API_KEY"</span> \</pre>
                             <pre class="text-gray-400">  -H <span class="text-emerald-400">"Content-Type: application/json"</span> \</pre>
                             <pre class="text-gray-400">  -d '{</pre>
@@ -362,10 +366,11 @@
     <!-- Footer -->
     <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div class="flex items-center gap-2">
-                <img src="{{ asset('image/logo.webp') }}" alt="PayLink Logo" class="h-8 w-auto">
-                <span class="text-xl font-bold text-white">PayLink</span>
-            </div>
+         <div class="flex items-center">
+    <img src="{{ asset('image/logo.webp') }}" 
+         alt="Linkbayar Logo" 
+         class="h-36 w-auto -my-6">
+</div>
             
             <div class="flex items-center gap-8 text-sm">
                 <a href="#biaya" class="hover:text-white transition-colors">Biaya</a>
@@ -375,7 +380,7 @@
             </div>
 
             <div class="text-xs">
-                &copy; {{ date('Y') }} PayLink Indonesia. All rights reserved.
+                &copy; {{ date('Y') }} Linkbayar Indonesia. All rights reserved.
             </div>
         </div>
     </footer>
