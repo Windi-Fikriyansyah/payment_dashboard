@@ -36,7 +36,7 @@
                     <!-- Sidebar Header -->
                     <div class="h-16 flex items-center px-6 border-b border-gray-100 dark:border-gray-700">
                         <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                             <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold italic">P</div>
+                             <img src="{{ asset('image/logo.webp') }}" alt="Logo" class="w-8 h-8 rounded-lg">
                             <span class="text-xl font-bold text-gray-900 dark:text-white">{{ config('app.name') }}</span>
                         </a>
                     </div>
