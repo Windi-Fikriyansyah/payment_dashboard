@@ -67,16 +67,18 @@
         <div class="flex justify-between items-center h-20">
     
     <div class="flex items-center">
-        <img src="{{ asset('image/logo.webp') }}" 
-             alt="Linkbayar Logo" 
-             class="h-36 w-auto -my-6">
+        <a href="{{ route('home') }}">
+            <img src="{{ asset('image/logo.webp') }}" 
+                 alt="Linkbayar Logo" 
+                 class="h-36 w-auto -my-6">
+        </a>
     </div>
 
             
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center gap-8">
-                    <a href="#biaya" class="text-sm font-semibold hover:text-blue-600 transition-colors">Biaya</a>
+                    <a href="{{ route('biaya') }}" class="text-sm font-semibold hover:text-blue-600 transition-colors">Biaya</a>
                     <a href="#panduan" class="text-sm font-semibold hover:text-blue-600 transition-colors">Panduan</a>
                     
                     @if (Route::has('login'))
@@ -118,8 +120,8 @@
             </div>
             
             <h1 class="text-5xl lg:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
-                Terima Pembayaran <br>
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 animate-gradient">Hanya dengan Link.</span>
+                Layanan Link
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 animate-gradient">Pembayaran.</span>
             </h1>
             
             <p class="text-lg lg:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -367,20 +369,22 @@
     <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-8">
          <div class="flex items-center">
-    <img src="{{ asset('image/logo.webp') }}" 
-         alt="Linkbayar Logo" 
-         class="h-36 w-auto -my-6">
+    <a href="{{ route('home') }}">
+        <img src="{{ asset('image/logo.webp') }}" 
+             alt="Linkbayar Logo" 
+             class="h-36 w-auto -my-6">
+    </a>
 </div>
             
             <div class="flex items-center gap-8 text-sm">
-                <a href="#biaya" class="hover:text-white transition-colors">Biaya</a>
+                <a href="{{ route('biaya') }}" class="hover:text-white transition-colors">Biaya</a>
                 <a href="#panduan" class="hover:text-white transition-colors">Panduan</a>
                 <a href="{{ route('login') }}" class="hover:text-white transition-colors">Login</a>
                 <a href="{{ route('register') }}" class="hover:text-white transition-colors">Register</a>
             </div>
 
             <div class="text-xs">
-                &copy; {{ date('Y') }} Linkbayar Indonesia. All rights reserved.
+                &copy; 2025 Linkbayar Indonesia. All rights reserved.
             </div>
         </div>
     </footer>
