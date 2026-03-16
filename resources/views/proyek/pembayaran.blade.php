@@ -39,13 +39,13 @@
                     <p class="text-xs text-gray-500 font-mono mb-4">{{ $method->code }}</p>
 
                     <div class="space-y-2 mt-4 pt-4 border-t border-gray-50 dark:border-gray-700">
+                        
                         <div class="flex justify-between text-xs">
-                            <span class="text-gray-500">Fee Percent:</span>
-                            <span class="font-bold text-gray-900 dark:text-white">{{ $method->fee_percent }}%</span>
-                        </div>
-                        <div class="flex justify-between text-xs">
-                            <span class="text-gray-500">Fee Flat:</span>
-                            <span class="font-bold text-gray-900 dark:text-white">Rp {{ number_format($method->fee_flat, 0, ',', '.') }}</span>
+                            <span class="text-gray-500">biaya :</span>
+                            <span class="font-bold text-gray-900 dark:text-white">@if(strtolower($method->code) == 'qris')
+             0.7% +
+        @endif
+        Rp {{ number_format($method->fee_flat, 0, ',', '.') }}</span>
                         </div>
                     </div>
 

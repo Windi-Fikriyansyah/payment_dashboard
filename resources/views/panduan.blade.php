@@ -125,16 +125,11 @@
                     <p class="text-gray-600 dark:text-gray-400">Semua request API memerlukan <span class="font-bold">API Key</span> untuk autentikasi. Gunakan salah satu cara berikut:</p>
                     
                     <div class="space-y-4">
-                        <div>
-                            <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-2">Cara 1 - Melalui Header (Disarankan)</h4>
-                            <pre class="bg-gray-900 text-gray-100 p-4 rounded-xl text-sm font-mono overflow-auto">X-API-Key: api_key_anda</pre>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-2">Cara 2 - Melalui Body JSON</h4>
-                            <pre class="bg-gray-900 text-gray-100 p-4 rounded-xl text-sm font-mono overflow-auto">{
-    "api_key": "api_key_anda",
-    ...
-}</pre>
+                        <div class="p-5 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-700">
+                            <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-3">Header Autentikasi</h4>
+                            <div class="bg-gray-950 p-4 rounded-xl font-mono text-sm text-blue-400 overflow-auto border border-gray-800">
+                                X-API-Key: <span class="text-emerald-400">api_key_anda</span>
+                            </div>
                         </div>
                     </div>
 
@@ -197,7 +192,6 @@
                                         <tr><td class="px-6 py-3 font-mono text-blue-600">maybank_va</td><td class="px-6 py-3 dark:text-gray-300">Maybank Virtual Account</td></tr>
                                         <tr><td class="px-6 py-3 font-mono text-blue-600">permata_va</td><td class="px-6 py-3 dark:text-gray-300">Permata Virtual Account</td></tr>
                                         <tr><td class="px-6 py-3 font-mono text-blue-600">artha_graha_va</td><td class="px-6 py-3 dark:text-gray-300">Artha Graha Virtual Account</td></tr>
-                                        <tr><td class="px-6 py-3 font-mono text-blue-600">sampoerna_va</td><td class="px-6 py-3 dark:text-gray-300">Sampoerna Virtual Account</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -207,8 +201,7 @@
                                 <pre class="bg-gray-950 p-6 rounded-2xl font-mono text-xs text-emerald-400">{
     "project": "nama_project_anda",
     "order_id": "INV240910001",
-    "amount": 99000,
-    "api_key": "api_key_anda"
+    "amount": 99000
 }</pre>
                             </div>
 
@@ -216,10 +209,10 @@
                                 <div class="p-4 border border-gray-100 dark:border-gray-700 rounded-xl">
                                     <div class="font-bold text-gray-900 dark:text-white mb-2 underline">Request Fields</div>
                                     <ul class="space-y-1 text-gray-600 dark:text-gray-400">
+                                        <li><span class="font-mono text-blue-600">X-API-Key</span>: (Header) API Key project</li>
                                         <li><span class="font-mono text-blue-600">project</span>: Nama project Anda</li>
                                         <li><span class="font-mono text-blue-600">order_id</span>: ID pesanan unik</li>
                                         <li><span class="font-mono text-blue-600">amount</span>: Jumlah (Rupiah)</li>
-                                        <li><span class="font-mono text-blue-600">api_key</span>: API Key project</li>
                                     </ul>
                                 </div>
                                 <div class="p-4 border border-gray-100 dark:border-gray-700 rounded-xl">
@@ -242,22 +235,24 @@
                                 <div class="bg-gray-950 p-6 font-mono text-xs overflow-auto">
                                     <pre x-show="lang === 'bash'" class="text-gray-300">curl -L -X POST 'https://app.linkbayar.my.id/api/transactioncreate/qris' \
 -H 'Content-Type: application/json' \
+-H 'X-API-Key: xxx123' \
 -d '{
     "project": "depodomain",
     "order_id": "INV240910001",
-    "amount": 99000,
-    "api_key": "xxx123"
+    "amount": 99000
 }'</pre>
                                     <pre x-show="lang === 'php'" class="text-gray-300">$ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, 'https://app.linkbayar.my.id/api/transactioncreate/qris');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'X-API-Key: xxx123'
+]);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
     'project'  => 'depodomain',
     'order_id' => 'INV240910001',
-    'amount'   => 99000,
-    'api_key'  => 'xxx123'
+    'amount'   => 99000
 ]));
 $response = curl_exec($ch);
 curl_close($ch);</pre>
@@ -292,17 +287,40 @@ curl_close($ch);</pre>
                                 <div class="text-emerald-400">https://app.linkbayar.my.id/api/transactioncancel</div>
                             </div>
 
-                            <div x-data="{ lang: 'request' }" class="rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
-                                <div class="flex gap-1 bg-gray-50 dark:bg-gray-900/50 p-2">
-                                    <button @click="lang = 'request'" :class="lang === 'request' ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all">JSON BODY</button>
+                            <div x-data="{ lang: 'bash' }" class="rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                                <div class="flex gap-1 bg-gray-50 dark:bg-gray-900/50 p-2 border-b border-gray-100 dark:border-gray-700">
+                                    <button @click="lang = 'bash'" :class="lang === 'bash' ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all">CURL</button>
+                                    <button @click="lang = 'php'" :class="lang === 'php' ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all">PHP</button>
+                                    <button @click="lang = 'request'" :class="lang === 'request' ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all">BODY</button>
                                     <button @click="lang = 'response'" :class="lang === 'response' ? 'bg-white dark:bg-gray-800 text-emerald-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all">RESPONSE</button>
                                 </div>
                                 <div class="bg-gray-950 p-6 font-mono text-xs overflow-auto">
+                                    <pre x-show="lang === 'bash'" class="text-gray-300">curl -L -X POST 'https://app.linkbayar.my.id/api/transactioncancel' \
+-H 'Content-Type: application/json' \
+-H 'X-API-Key: xxx123' \
+-d '{
+    "project": "depodomain",
+    "order_id": "INV240910001",
+    "amount": 99000
+}'</pre>
+                                    <pre x-show="lang === 'php'" class="text-gray-300">$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://app.linkbayar.my.id/api/transactioncancel');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'X-API-Key: xxx123'
+]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+    'project'  => 'depodomain',
+    'order_id' => 'INV240910001',
+    'amount'   => 99000
+]));
+$response = curl_exec($ch);</pre>
                                     <pre x-show="lang === 'request'" class="text-gray-300">{
     "project": "depodomain",
     "order_id": "INV240910001",
-    "amount": 99000,
-    "api_key": "xxx123"
+    "amount": 99000
 }</pre>
                                     <pre x-show="lang === 'response'" class="text-emerald-400">{
     "message": "Transaction cancelled"
@@ -356,16 +374,35 @@ curl_close($ch);</pre>
                         <div class="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/30 rounded-2xl text-indigo-700 dark:text-indigo-300 text-sm mb-6 font-bold">
                             HANYA tersedia untuk project dalam mode SANDBOX.
                         </div>
-                        <div class="space-y-6">
-                            <div class="bg-gray-900 rounded-2xl p-6 font-mono text-sm text-emerald-400">
-                                https://app.linkbayar.my.id/api/paymentsimulation
+                        <div x-data="{ lang: 'bash' }" class="rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700">
+                            <div class="flex gap-1 bg-gray-50 dark:bg-gray-900/50 p-2 border-b border-gray-100 dark:border-gray-700">
+                                <button @click="lang = 'bash'" :class="lang === 'bash' ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all">CURL</button>
+                                <button @click="lang = 'php'" :class="lang === 'php' ? 'bg-white dark:bg-gray-800 text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all">PHP</button>
                             </div>
-                            <pre class="bg-gray-950 p-6 rounded-2xl font-mono text-xs text-gray-300">{
+                            <div class="bg-gray-950 p-6 font-mono text-xs overflow-auto">
+                                <pre x-show="lang === 'bash'" class="text-gray-300">curl -L -X POST 'https://app.linkbayar.my.id/api/paymentsimulation' \
+-H 'Content-Type: application/json' \
+-H 'X-API-Key: xxx123' \
+-d '{
     "project": "depodomain",
     "order_id": "INV240910001",
-    "amount": 99000,
-    "api_key": "xxx123"
-}</pre>
+    "amount": 99000
+}'</pre>
+                                <pre x-show="lang === 'php'" class="text-gray-300">$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'https://app.linkbayar.my.id/api/paymentsimulation');
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Content-Type: application/json',
+    'X-API-Key: xxx123'
+]);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+    'project'  => 'depodomain',
+    'order_id' => 'INV240910001',
+    'amount'   => 99000
+]));
+$response = curl_exec($ch);</pre>
+                            </div>
                         </div>
                     </div>
 
@@ -375,7 +412,7 @@ curl_close($ch);</pre>
                             <span class="px-2.5 py-1 bg-teal-100 text-teal-700 rounded text-xs font-bold uppercase">GET</span>
                             <h3 class="text-xl font-bold text-gray-900 dark:text-white">D.5. Get Payment Methods</h3>
                         </div>
-                        <p class="text-gray-600 dark:text-gray-400 mb-6">Ambil daftar metode pembayaran yang aktif beserta rincian biaya (fee) secara dinamis.</p>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Ambil <a href="{{ ($proj = \Illuminate\Support\Facades\DB::table('projects')->where('user_id', Auth::id())->first()) ? route('proyek.pembayaran', \Illuminate\Support\Facades\Crypt::encryptString($proj->id)) : route('proyek.index') }}" class="text-blue-600 font-bold hover:underline">daftar metode pembayaran</a> yang aktif beserta rincian biaya (fee) secara dinamis.</p>
                         <div class="bg-gray-900 rounded-2xl p-6 font-mono text-sm text-emerald-400 mb-6">
                             https://app.linkbayar.my.id/api/get_metode_pembayaran?amount=100000
                         </div>
@@ -538,15 +575,30 @@ echo "OK";</pre>
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-50 dark:bg-gray-900/50 text-gray-500 uppercase text-[10px] font-bold">
                             <tr>
-                                <th class="px-6 py-4">Kategori</th>
-                                <th class="px-6 py-4">Rumus Perhitungan Fee</th>
+                                <th class="px-6 py-4">Nama Bank / Metode</th>
+                                <th class="px-6 py-4">Biaya</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                            <tr><td class="px-6 py-4 font-bold dark:text-white">QRIS</td><td class="px-6 py-4 dark:text-gray-300">0,7% + Rp 310</td></tr>
-                            <tr><td class="px-6 py-4 font-bold dark:text-white">BRI, BNI, VA Lainnya</td><td class="px-6 py-4 dark:text-gray-300">Rp 3.500 (Flat)</td></tr>
-                            <tr><td class="px-6 py-4 font-bold dark:text-white">Mandiri VA</td><td class="px-6 py-4 dark:text-gray-300">Rp 4.500 (Flat)</td></tr>
-                            <tr><td class="px-6 py-4 font-bold dark:text-white">BCA VA</td><td class="px-6 py-4 dark:text-gray-300">Rp 5.500 (Flat)</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">BCA Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 5.500</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">ATM Bersama</td><td class="px-6 py-4 dark:text-gray-300">Rp 3.500</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">Permata Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 3.500</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">Maybank Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 3.500</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">Mandiri Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 4.500</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">CIMB Niaga Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 3.500</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">Artha Graha Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 2.000</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">BNI Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 3.500</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">BNC Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 3.500</td></tr>
+                            <tr><td class="px-6 py-4 font-bold dark:text-white">BRI Virtual Account</td><td class="px-6 py-4 dark:text-gray-300">Rp 3.500</td></tr>
+                            <tr>
+                                <td class="px-6 py-4 font-bold dark:text-white">QRIS</td>
+                                <td class="px-6 py-4 dark:text-gray-300">
+                                    <div>0.7% + Rp 310</div>
+                                    <div class="text-[10px] text-amber-600 dark:text-amber-400 mt-1 font-medium italic">
+                                        Catatan: Untuk nominal diatas Rp 100.000, biayanya menjadi 1% + Rp 0
+                                    </div>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
