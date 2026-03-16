@@ -9,7 +9,7 @@
             
         </div>
 
-        <div id="custom-filters" class="hidden items-center gap-3">
+        <div id="custom-filters" class="hidden items-center flex-wrap gap-3">
             <select id="filter-project"
                 class="bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-2.5 pr-10 dark:bg-gray-800 dark:border-gray-700 dark:text-white shadow-sm outline-none cursor-pointer">
                 <option value="">Semua Proyek</option>
@@ -39,7 +39,7 @@
         <div
             class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-sm">
             <div class="p-6">
-                <table id="transactions-table" class="display w-full text-left text-gray-500 dark:text-gray-400">
+                <table id="transactions-table" class="display responsive nowrap w-full text-left text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300 uppercase text-xs">
                         <tr>
                             <th class="px-6 py-4 font-bold">Tanggal</th>
@@ -62,8 +62,10 @@
 
     <!-- DataTables Script -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
     <style>
         .dataTables_wrapper .dataTables_length select {
@@ -90,11 +92,25 @@
 
         .dataTables_wrapper .dataTables_filter {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             justify-content: flex-end;
             gap: 1rem;
-            float: right;
+            width: 100%;
             margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .dataTables_wrapper .dataTables_filter {
+                justify-content: flex-start;
+            }
+            #custom-filters {
+                width: 100%;
+            }
+            #custom-filters select {
+                flex: 1 1 auto;
+                min-width: 120px;
+            }
         }
 
         .dataTables_wrapper .dataTables_filter label {
@@ -120,6 +136,7 @@
             
 
             var table = $('#transactions-table').DataTable({
+                responsive: true,
                 processing: true,
                 serverSide: true,
                 ajax: {

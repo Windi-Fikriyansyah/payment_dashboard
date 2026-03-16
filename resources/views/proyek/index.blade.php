@@ -21,7 +21,7 @@
         <!-- DataTable Container -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-sm">
             <div class="p-6">
-                <table id="projects-table" class="display w-full">
+                <table id="projects-table" class="display responsive nowrap w-full">
                     <thead>
                         <tr>
                             <th class="px-6 py-4 font-bold">Nama</th>
@@ -131,6 +131,18 @@
             margin-bottom: 20px !important;
         }
 
+        @media (max-width: 640px) {
+            .dataTables_wrapper .dataTables_filter {
+                text-align: left !important;
+                float: none !important;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                width: 100% !important;
+                margin-left: 0 !important;
+                margin-top: 8px !important;
+            }
+        }
+
         table.dataTable {
             margin-top: 20px !important;
             border-spacing: 0;
@@ -140,12 +152,15 @@
 
     <!-- DataTables Script -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 
     <script>
         $(document).ready(function() {
             $('#projects-table').DataTable({
+                responsive: true,
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route("proyek.data") }}',

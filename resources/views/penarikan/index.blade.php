@@ -34,7 +34,7 @@
         <!-- DataTable Container -->
         <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden text-sm">
             <div class="p-6">
-                <table id="penarikan-table" class="display w-full text-left text-gray-500 dark:text-gray-400">
+                <table id="penarikan-table" class="display responsive nowrap w-full text-left text-gray-500 dark:text-gray-400">
                     <thead class="bg-gray-50 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300 uppercase text-xs">
                         <tr>
                             <th class="px-6 py-4 font-bold">Tanggal</th>
@@ -113,16 +113,19 @@
 
     <!-- Scripts -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         $(document).ready(function() {
             const table = $('#penarikan-table').DataTable({
+                responsive: true,
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route('penarikan.data') }}',
@@ -241,6 +244,18 @@
         .dataTables_wrapper .dataTables_filter {
             @apply text-sm text-gray-600 dark:text-gray-400;
             margin-bottom: 20px !important;
+        }
+
+        @media (max-width: 640px) {
+            .dataTables_wrapper .dataTables_filter {
+                text-align: left !important;
+                float: none !important;
+            }
+            .dataTables_wrapper .dataTables_filter input {
+                width: 100% !important;
+                margin-left: 0 !important;
+                margin-top: 8px !important;
+            }
         }
         table.dataTable {
             margin-top: 20px !important;
