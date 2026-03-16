@@ -50,6 +50,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/penarikan', [\App\Http\Controllers\PenarikanController::class, 'index'])->name('penarikan.index');
     Route::get('/penarikan/data', [\App\Http\Controllers\PenarikanController::class, 'data'])->name('penarikan.data');
     Route::post('/penarikan', [\App\Http\Controllers\PenarikanController::class, 'store'])->name('penarikan.store');
+
+    // Panduan
+    Route::get('/panduan', function () {
+        return view('panduan');
+    })->name('panduan');
 });
 
 require __DIR__.'/auth.php';

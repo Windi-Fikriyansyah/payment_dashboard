@@ -17,7 +17,7 @@
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     </head>
     <body class="h-full font-sans antialiased" x-data="{ sidebarOpen: false }">
-        <div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
+        <div class="h-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden">
             <!-- Mobile Sidebar Overlay -->
             <div x-show="sidebarOpen" 
                  x-transition:enter="transition-opacity ease-linear duration-300" 
@@ -72,14 +72,13 @@
                             <span>Penarikan</span>
                         </x-nav-link-custom>
 
-                        <div class="pt-4 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider px-3">Integrasi</div>
-
-                        <x-nav-link-custom href="{{route('transaksi_api.index')}}" :active="request()->routeIs('transaksi_api.*')">
+                        
+                        <!-- <x-nav-link-custom href="{{route('transaksi_api.index')}}" :active="request()->routeIs('transaksi_api.*')">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
                             </svg>
                             <span>Transaksi API</span>
-                        </x-nav-link-custom>
+                        </x-nav-link-custom> -->
 
                         <x-nav-link-custom :href="route('rekening.index')" :active="request()->routeIs('rekening.*')">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -88,14 +87,13 @@
                             <span>Rekening Bank</span>
                         </x-nav-link-custom>
 
-                        <div class="pt-4 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider px-3">Bantuan</div>
                         
-                        <x-nav-link-custom href="#" :active="false">
+                        <!-- <x-nav-link-custom :href="route('panduan')" :active="request()->routeIs('panduan')">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                             </svg>
                             <span>Panduan</span>
-                        </x-nav-link-custom>
+                        </x-nav-link-custom> -->
                     </nav>
 
                     <!-- Sidebar Footer -->
