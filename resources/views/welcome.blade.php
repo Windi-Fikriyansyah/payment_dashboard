@@ -179,7 +179,7 @@
     
 
     <!-- API Section -->
-    <section class="py-24 bg-slate-900 text-white overflow-hidden relative">
+    <!-- <section class="py-24 bg-slate-900 text-white overflow-hidden relative">
         <div class="hero-shape top-0 right-0 w-64 h-64 bg-blue-500/20"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col lg:flex-row items-center gap-16">
@@ -206,7 +206,7 @@
                     </ul>
                 </div>
                 <div class="flex-1 w-full lg:w-auto">
-                    <!-- Code Snippet Box -->
+                   
                     <div class="bg-gray-800/50 border border-gray-700 rounded-3xl p-1 shadow-2xl">
                         <div class="bg-gray-900 rounded-[1.4rem] p-6 lg:p-8 font-mono text-sm overflow-x-auto">
                             <div class="flex gap-2 mb-6">
@@ -227,7 +227,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Panduan Section -->
     <section id="panduan" class="py-24">
@@ -302,6 +302,141 @@
                                     <div class="flex-1 text-sm font-bold">E-Wallet</div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 bg-white dark:bg-gray-950 relative overflow-hidden" x-data="{ activeFaq: null }">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-5xl font-extrabold mb-4">Pertanyaan yang Sering Diajukan</h2>
+                <p class="text-gray-600 dark:text-gray-400">Temukan jawaban untuk segala hal tentang LinkBayar</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl bg-slate-50/50 dark:bg-gray-900/50 overflow-hidden transition-all duration-300" :class="activeFaq === 1 ? 'ring-2 ring-blue-500/20 bg-white dark:bg-gray-900 shadow-xl shadow-blue-500/5' : ''">
+                    <button @click="activeFaq === 1 ? activeFaq = null : activeFaq = 1" class="w-full px-8 py-6 text-left flex justify-between items-center gap-4">
+                        <span class="text-lg font-bold" :class="activeFaq === 1 ? 'text-blue-600' : ''">Apa itu LinkBayar?</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="activeFaq === 1 ? 'rotate-180 text-blue-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeFaq === 1" x-collapse x-cloak>
+                        <div class="px-8 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            LinkBayar merupakan platform pembayaran digital yang memungkinkan Anda menerima dana dari pelanggan melalui satu tautan praktis yang dapat dibagikan dengan mudah ke WhatsApp, Instagram, atau media sosial lainnya.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl bg-slate-50/50 dark:bg-gray-900/50 overflow-hidden transition-all duration-300" :class="activeFaq === 2 ? 'ring-2 ring-blue-500/20 bg-white dark:bg-gray-900 shadow-xl shadow-blue-500/5' : ''">
+                    <button @click="activeFaq === 2 ? activeFaq = null : activeFaq = 2" class="w-full px-8 py-6 text-left flex justify-between items-center gap-4">
+                        <span class="text-lg font-bold" :class="activeFaq === 2 ? 'text-blue-600' : ''">Apakah LinkBayar adalah sebuah Payment Gateway?</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="activeFaq === 2 ? 'rotate-180 text-blue-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeFaq === 2" x-collapse x-cloak>
+                        <div class="px-8 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Bukan secara langsung. Kami bekerja sama dengan penyedia layanan Payment Gateway resmi sebagai agregator untuk memproses setiap transaksi Anda dengan standar keamanan tinggi. Dana Anda diproses dan disimpan oleh mitra Payment Gateway kami yang berlisensi Bank Indonesia.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl bg-slate-50/50 dark:bg-gray-900/50 overflow-hidden transition-all duration-300" :class="activeFaq === 3 ? 'ring-2 ring-blue-500/20 bg-white dark:bg-gray-900 shadow-xl shadow-blue-500/5' : ''">
+                    <button @click="activeFaq === 3 ? activeFaq = null : activeFaq = 3" class="w-full px-8 py-6 text-left flex justify-between items-center gap-4">
+                        <span class="text-lg font-bold" :class="activeFaq === 3 ? 'text-blue-600' : ''">Apa maksud dari "Integrasi Instan" di LinkBayar?</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="activeFaq === 3 ? 'rotate-180 text-blue-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeFaq === 3" x-collapse x-cloak>
+                        <div class="px-8 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Jika Anda mengurus integrasi mandiri ke Payment Gateway, biasanya diperlukan waktu hingga 14 hari kerja untuk verifikasi QRIS. Bersama LinkBayar, fitur QRIS dan Virtual Account sudah langsung siap digunakan sejak hari pertama Anda bergabung tanpa birokrasi yang rumit.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                
+
+                <!-- FAQ Item 5 -->
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl bg-slate-50/50 dark:bg-gray-900/50 overflow-hidden transition-all duration-300" :class="activeFaq === 5 ? 'ring-2 ring-blue-500/20 bg-white dark:bg-gray-900 shadow-xl shadow-blue-500/5' : ''">
+                    <button @click="activeFaq === 5 ? activeFaq = null : activeFaq = 5" class="w-full px-8 py-6 text-left flex justify-between items-center gap-4">
+                        <span class="text-lg font-bold" :class="activeFaq === 5 ? 'text-blue-600' : ''">Apakah ada biaya pendaftaran atau langganan?</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="activeFaq === 5 ? 'rotate-180 text-blue-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeFaq === 5" x-collapse x-cloak>
+                        <div class="px-8 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Sama sekali tidak ada. Penggunaan LinkBayar bebas biaya pendaftaran maupun biaya berlangganan bulanan. Kami hanya mengenakan biaya (fee) ketika transaksi berhasil dilakukan, yang besarnya bisa Anda lihat di halaman skema biaya.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 6 -->
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl bg-slate-50/50 dark:bg-gray-900/50 overflow-hidden transition-all duration-300" :class="activeFaq === 6 ? 'ring-2 ring-blue-500/20 bg-white dark:bg-gray-900 shadow-xl shadow-blue-500/5' : ''">
+                    <button @click="activeFaq === 6 ? activeFaq = null : activeFaq = 6" class="w-full px-8 py-6 text-left flex justify-between items-center gap-4">
+                        <span class="text-lg font-bold" :class="activeFaq === 6 ? 'text-blue-600' : ''">Kapan dana transaksi bisa saya cairkan?</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="activeFaq === 6 ? 'rotate-180 text-blue-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeFaq === 6" x-collapse x-cloak>
+                        <div class="px-8 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Demi prosedur keamanan dan verifikasi sistem, pencairan saldo ke rekening pribadi dilakukan setiap hari pada pukul 18.00–19.00 WIB. Hal ini dilakukan untuk memastikan seluruh transaksi telah terverifikasi dengan baik serta untuk mencegah tindakan fraud dan menjaga keamanan merchant.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 7 -->
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl bg-slate-50/50 dark:bg-gray-900/50 overflow-hidden transition-all duration-300" :class="activeFaq === 7 ? 'ring-2 ring-blue-500/20 bg-white dark:bg-gray-900 shadow-xl shadow-blue-500/5' : ''">
+                    <button @click="activeFaq === 7 ? activeFaq = null : activeFaq = 7" class="w-full px-8 py-6 text-left flex justify-between items-center gap-4">
+                        <span class="text-lg font-bold" :class="activeFaq === 7 ? 'text-blue-600' : ''">Bank apa saja yang didukung untuk penarikan dana?</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="activeFaq === 7 ? 'rotate-180 text-blue-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeFaq === 7" x-collapse x-cloak>
+                        <div class="px-8 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Kami mendukung seluruh jaringan Bank Nasional dan E-Wallet di Indonesia.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 8 -->
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl bg-slate-50/50 dark:bg-gray-900/50 overflow-hidden transition-all duration-300" :class="activeFaq === 8 ? 'ring-2 ring-blue-500/20 bg-white dark:bg-gray-900 shadow-xl shadow-blue-500/5' : ''">
+                    <button @click="activeFaq === 8 ? activeFaq = null : activeFaq = 8" class="w-full px-8 py-6 text-left flex justify-between items-center gap-4">
+                        <span class="text-lg font-bold" :class="activeFaq === 8 ? 'text-blue-600' : ''">Berapa lama waktu proses penarikan dana?</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="activeFaq === 8 ? 'rotate-180 text-blue-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeFaq === 8" x-collapse x-cloak>
+                        <div class="px-8 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Proses penarikan memakan waktu 5 hingga 30 menit selama jam operasional kerja. Permintaan penarikan yang diajukan di luar waktu pencairan (18.00–19.00 WIB) akan diverifikasi dan diproses pada jadwal pencairan berikutnya di hari selanjutnya.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 9 -->
+                <div class="border border-gray-100 dark:border-gray-800 rounded-2xl bg-slate-50/50 dark:bg-gray-900/50 overflow-hidden transition-all duration-300" :class="activeFaq === 9 ? 'ring-2 ring-blue-500/20 bg-white dark:bg-gray-900 shadow-xl shadow-blue-500/5' : ''">
+                    <button @click="activeFaq === 9 ? activeFaq = null : activeFaq = 9" class="w-full px-8 py-6 text-left flex justify-between items-center gap-4">
+                        <span class="text-lg font-bold" :class="activeFaq === 9 ? 'text-blue-600' : ''">Dapatkah menarik dana di hari libur?</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="activeFaq === 9 ? 'rotate-180 text-blue-600' : 'text-gray-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="activeFaq === 9" x-collapse x-cloak>
+                        <div class="px-8 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed">
+                            Tentu saja. LinkBayar berkomitmen untuk tetap melayani proses pencairan dana Anda setiap hari, termasuk hari Sabtu, Minggu, hingga hari libur nasional untuk memastikan cashflow bisnis Anda tetap lancar.
                         </div>
                     </div>
                 </div>
