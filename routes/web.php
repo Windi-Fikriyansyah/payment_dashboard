@@ -11,6 +11,10 @@ Route::get('/biaya', function () {
     return view('biaya');
 })->name('biaya');
 
+Route::get('/panduan', function () {
+    return view('panduan');
+})->name('panduan');
+
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -51,10 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/penarikan/data', [\App\Http\Controllers\PenarikanController::class, 'data'])->name('penarikan.data');
     Route::post('/penarikan', [\App\Http\Controllers\PenarikanController::class, 'store'])->name('penarikan.store');
 
-    // Panduan
-    Route::get('/panduan', function () {
-        return view('panduan');
-    })->name('panduan');
+
 });
 
 require __DIR__.'/auth.php';

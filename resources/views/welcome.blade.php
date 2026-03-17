@@ -97,7 +97,7 @@
                 <div class="hidden md:flex items-center gap-8">
                     <a href="{{ route('biaya') }}"
                         class="text-sm font-semibold hover:text-blue-600 transition-colors">Biaya</a>
-                    <a href="#panduan" class="text-sm font-semibold hover:text-blue-600 transition-colors">Panduan</a>
+                    <a href="{{ route('panduan') }}" class="text-sm font-semibold hover:text-blue-600 transition-colors">Panduan</a>
 
                     @if (Route::has('login'))
                         <div class="flex items-center gap-4">
@@ -166,7 +166,7 @@
                             d="M13 7l5 5m0 0l-5 5m5-5H6" />
                     </svg>
                 </a>
-                <a href="#panduan"
+                <a href="{{ route('panduan') }}"
                     class="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-2xl font-bold text-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all flex items-center justify-center gap-2">
                     Lihat Panduan
                 </a>
@@ -609,7 +609,7 @@
 
             <div class="flex items-center gap-8 text-sm">
                 <a href="{{ route('biaya') }}" class="hover:text-white transition-colors">Biaya</a>
-                <a href="#panduan" class="hover:text-white transition-colors">Panduan</a>
+                <a href="{{ route('panduan') }}" class="hover:text-white transition-colors">Panduan</a>
                 <a href="{{ route('login') }}" class="hover:text-white transition-colors">Login</a>
                 <a href="{{ route('register') }}" class="hover:text-white transition-colors">Register</a>
             </div>

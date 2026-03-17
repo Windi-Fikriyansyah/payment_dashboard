@@ -211,7 +211,7 @@
             
             <div class="flex items-center gap-8 text-sm">
                 <a href="{{ route('biaya') }}" class="hover:text-white transition-colors">Biaya</a>
-                <a href="{{ route('home') }}#panduan" class="hover:text-white transition-colors">Panduan</a>
+                <a href="{{ route('panduan') }}" class="hover:text-white transition-colors">Panduan</a>
                 <a href="{{ route('login') }}" class="hover:text-white transition-colors">Login</a>
                 <a href="{{ route('register') }}" class="hover:text-white transition-colors">Register</a>
             </div>

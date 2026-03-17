@@ -222,7 +222,7 @@
                 const orderId = `${projectName}_${randomId}`;
 
                 // Redirect to the URL
-                const url = `https://app.linkbayar.my.id/pay/${slug}/${amount}?order_id=${orderId}`;
+                const url = `http://127.0.0.1:3005/pay/${slug}/${amount}?order_id=${orderId}`;
                 window.open(url, '_blank');
 
                 // Close modal and reset

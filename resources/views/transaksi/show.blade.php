@@ -25,7 +25,7 @@
                     }
                 @endphp
                 <span class="px-3 py-1 bg-{{ $color }}-100 text-{{ $color }}-600 rounded-full text-xs font-bold uppercase tracking-wider">
-                    {{ $transaction->status }} 
+                    {{ $transaction->status }}
                     @if($status === 'pending' || $status === 'tertunda')
                         <span class="ml-1">↗</span>
                     @elseif($status === 'success' || $status === 'berhasil' || $status === 'paid')
@@ -73,10 +73,6 @@
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Metode</span>
                             <span class="text-sm font-bold text-gray-900 dark:text-white uppercase">{{ $transaction->payment_method ?? '-' }}</span>
                         </div>
-                        <div class="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
-                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Nomor Bayar</span>
-                            <span class="text-sm font-mono font-bold text-gray-900 dark:text-white">{{ $transaction->payment_number ?? '-' }}</span>
-                        </div>
                     </div>
 
                     <!-- Right Column -->
@@ -108,7 +104,7 @@
             </div>
 
             <!-- Footer Action -->
-            
+
         </div>
     </div>
 </x-app-layout>
