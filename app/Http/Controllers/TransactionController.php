@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
@@ -28,6 +29,91 @@ class TransactionController extends Controller
     }
 
     /**
+     * Create a checkout session via the external API (server-to-server).
+     * API Key is securely fetched from the database, never exposed to the frontend.
+     */
+    public function createCheckoutSession(Request $request)
+    {
+        $request->validate([
+            'project_id' => 'required|integer',
+            'amount' => 'required|integer|min:1',
+            'order_id' => 'required|string|max:100',
+            'redirect_url' => 'nullable|url|max:500',
+        ]);
+
+        // Get the project and verify ownership
+        $project = DB::table('projects')
+            ->where('id', $request->project_id)
+            ->where('user_id', Auth::id())
+            ->where('mode', 'production')
+            ->first(['id', 'api_key', 'slug']);
+
+        if (!$project) {
+            return response()->json([
+                'message' => 'Proyek tidak ditemukan atau bukan mode production.'
+            ], 404);
+        }
+
+        if (!$project->api_key) {
+            return response()->json([
+                'message' => 'API Key belum dikonfigurasi untuk proyek ini.'
+            ], 422);
+        }
+
+        // Build request body for the external API
+        $body = [
+            'amount' => (int)$request->amount,
+            'order_id' => $request->order_id,
+        ];
+
+        if ($request->filled('redirect_url')) {
+            $body['redirect_url'] = $request->redirect_url;
+        }
+
+        try {
+
+
+
+            $response = Http::withHeaders([
+                'X-API-Key' => $project->api_key,
+            ])->timeout(30)->post('https://app.linkbayar.my.id/api/checkout-session', $body);
+
+            $responseBody = $response->json();
+            $statusCode = $response->status();
+
+            \Log::info('Checkout Session Response', [
+                'status' => $statusCode,
+                'body' => $responseBody,
+            ]);
+
+            if ($response->successful() && isset($responseBody['payment_url'])) {
+                return response()->json([
+                    'payment_url' => $responseBody['payment_url'],
+                    'order_id' => $responseBody['order_id'] ?? $request->order_id,
+                    'amount' => $responseBody['amount'] ?? $request->amount,
+                ]);
+            }
+
+            // Forward error from the external API with details
+            return response()->json([
+                'message' => $responseBody['message'] ?? $responseBody['error'] ?? 'Gagal membuat sesi pembayaran.',
+                'debug' => $responseBody,
+            ], $statusCode ?: 500);
+
+        }
+        catch (\Exception $e) {
+            \Log::error('Checkout Session Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'message' => 'Tidak dapat menghubungi server pembayaran: ' . $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Fetch transactions for Yajra DataTables.
      */
     public function data(Request $request)
@@ -37,20 +123,20 @@ class TransactionController extends Controller
             ->where('projects.user_id', Auth::id())
             ->where('transactions.jenis', 'url')
             ->select([
-                'transactions.id',
-                'transactions.project_id',
-                'transactions.order_id',
-                'transactions.reference',
-                'transactions.amount',
-                'transactions.fee',
-                'transactions.total_payment',
-                'transactions.status',
-                'transactions.payment_method',
-                'transactions.payment_number',
-                'transactions.created_at',
-                'transactions.mode',
-                'projects.nama as nama_proyek'
-            ]);
+            'transactions.id',
+            'transactions.project_id',
+            'transactions.order_id',
+            'transactions.reference',
+            'transactions.amount',
+            'transactions.fee',
+            'transactions.total_payment',
+            'transactions.status',
+            'transactions.payment_method',
+            'transactions.payment_number',
+            'transactions.created_at',
+            'transactions.mode',
+            'projects.nama as nama_proyek'
+        ]);
 
         // Filter by Status
         if ($request->filled('status')) {
@@ -69,46 +155,48 @@ class TransactionController extends Controller
 
         return DataTables::of($transactions)
             ->addColumn('tanggal_format', function ($row) {
-                return date('d M Y, H:i', strtotime($row->created_at));
-            })
+            return date('d M Y, H:i', strtotime($row->created_at));
+        })
             ->addColumn('amount_format', function ($row) {
-                return 'Rp ' . number_format($row->amount, 0, ',', '.');
-            })
+            return 'Rp ' . number_format($row->amount, 0, ',', '.');
+        })
             ->addColumn('fee_format', function ($row) {
-                return 'Rp ' . number_format($row->fee, 0, ',', '.');
-            })
+            return 'Rp ' . number_format($row->fee, 0, ',', '.');
+        })
             ->addColumn('total_format', function ($row) {
-                return 'Rp ' . number_format($row->total_payment, 0, ',', '.');
-            })
+            return 'Rp ' . number_format($row->total_payment, 0, ',', '.');
+        })
             ->addColumn('status_badge', function ($row) {
-                $color = 'gray';
-                $status = strtolower($row->status);
-                if ($status === 'success' || $status === 'berhasil' || $status === 'paid') {
-                    $color = 'emerald';
-                } elseif ($status === 'pending' || $status === 'tertunda') {
-                    $color = 'amber';
-                } elseif ($status === 'failed' || $status === 'gagal' || $status === 'expired') {
-                    $color = 'rose';
-                }
+            $color = 'gray';
+            $status = strtolower($row->status);
+            if ($status === 'success' || $status === 'berhasil' || $status === 'paid') {
+                $color = 'emerald';
+            }
+            elseif ($status === 'pending' || $status === 'tertunda') {
+                $color = 'amber';
+            }
+            elseif ($status === 'failed' || $status === 'gagal' || $status === 'expired') {
+                $color = 'rose';
+            }
 
-                return '<span class="px-2.5 py-1 bg-' . $color . '-100 text-' . $color . '-600 rounded-lg text-xs font-bold uppercase tracking-wide">' . $row->status . '</span>';
-            })
+            return '<span class="px-2.5 py-1 bg-' . $color . '-100 text-' . $color . '-600 rounded-lg text-xs font-bold uppercase tracking-wide">' . $row->status . '</span>';
+        })
             ->addColumn('mode_badge', function ($row) {
-                $color = strtolower($row->mode) === 'production' ? 'rose' : 'blue';
-                return '<span class="px-2 py-0.5 bg-' . $color . '-100 text-' . $color . '-600 rounded-md text-[10px] font-bold uppercase">' . $row->mode . '</span>';
-            })
+            $color = strtolower($row->mode) === 'production' ? 'rose' : 'blue';
+            return '<span class="px-2 py-0.5 bg-' . $color . '-100 text-' . $color . '-600 rounded-md text-[10px] font-bold uppercase">' . $row->mode . '</span>';
+        })
             ->addColumn('aksi', function ($row) {
-                return '<a href="' . route('transaksi.show', Crypt::encrypt($row->id)) . '" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors duration-200">
+            return '<a href="' . route('transaksi.show', Crypt::encrypt($row->id)) . '" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-bold transition-colors duration-200">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                             Detail
                         </a>';
-            })
+        })
             ->filterColumn('created_at', function ($query, $keyword) {
-                $query->whereRaw("TO_CHAR(transactions.created_at, 'DD Mon YYYY') ILIKE ?", ["%{$keyword}%"]);
-            })
+            $query->whereRaw("TO_CHAR(transactions.created_at, 'DD Mon YYYY') ILIKE ?", ["%{$keyword}%"]);
+        })
             ->rawColumns(['status_badge', 'mode_badge', 'aksi'])
             ->make(true);
     }
@@ -120,7 +208,8 @@ class TransactionController extends Controller
     {
         try {
             $realId = Crypt::decrypt($id);
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             abort(404);
         }
 
@@ -129,9 +218,9 @@ class TransactionController extends Controller
             ->where('projects.user_id', Auth::id())
             ->where('transactions.id', $realId)
             ->select([
-                'transactions.*',
-                'projects.nama as nama_proyek'
-            ])
+            'transactions.*',
+            'projects.nama as nama_proyek'
+        ])
             ->first();
 
         if (!$transaction) {

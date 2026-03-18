@@ -175,6 +175,15 @@
                                     <p class="mt-2 text-[11px] text-gray-500 dark:text-gray-400 italic">* Masukkan
                                         nominal tanpa titik atau koma</p>
                                 </div>
+                                <div>
+                                    <label for="modal-redirect-url"
+                                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Redirect
+                                        URL <span class="text-gray-400 font-normal">(opsional)</span></label>
+                                    <input type="url" id="modal-redirect-url"
+                                        class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white shadow-sm outline-none transition-all"
+                                        placeholder="https://tokoanda.com/success">
+                                    <p class="mt-2 text-[11px] text-gray-500 dark:text-gray-400 italic">* URL tujuan setelah pembayaran selesai</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -204,14 +213,16 @@
                 $('#create-transaction-modal').addClass('hidden');
             });
 
-            // Handle submission
-            $('#submit-create-transaction').on('click', function() {
+            // Handle submission via backend checkout session
+            $('#submit-create-transaction').on('click', async function() {
+                const btn = $(this);
                 const projectSelect = $('#modal-project-id');
                 const selectedOption = projectSelect.find('option:selected');
-                const slug = selectedOption.data('slug');
+                const projectId = selectedOption.val();
                 const amount = $('#modal-amount').val();
+                const redirectUrl = $('#modal-redirect-url').val();
 
-                if (!slug || !amount) {
+                if (!projectId || !amount) {
                     alert('Harap pilih proyek dan isi jumlah pembayaran');
                     return;
                 }
@@ -221,14 +232,61 @@
                 const randomId = Math.floor(Math.random() * 100000);
                 const orderId = `${projectName}_${randomId}`;
 
-                // Redirect to the URL
-                const url = `http://127.0.0.1:3005/pay/${slug}/${amount}?order_id=${orderId}`;
-                window.open(url, '_blank');
+                // Disable button and show loading
+                btn.prop('disabled', true).html(
+                    '<svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Memproses...'
+                );
 
-                // Close modal and reset
-                $('#create-transaction-modal').addClass('hidden');
-                $('#modal-amount').val('');
-                projectSelect.val('');
+                try {
+                    // Build request body
+                    const body = {
+                        project_id: parseInt(projectId),
+                        amount: parseInt(amount),
+                        order_id: orderId
+                    };
+                    if (redirectUrl) {
+                        body.redirect_url = redirectUrl;
+                    }
+
+                    // Call internal backend route (API key is handled server-side)
+                    const response = await fetch('{{ route("transaksi.createCheckout") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.payment_url) {
+                        // Open the payment URL
+                        window.open(data.payment_url, '_blank');
+
+                        // Close modal and reset
+                        $('#create-transaction-modal').addClass('hidden');
+                        $('#modal-amount').val('');
+                        $('#modal-redirect-url').val('');
+                        projectSelect.val('');
+
+                        // Reload the DataTable
+                        if (typeof table !== 'undefined') {
+                            table.ajax.reload(null, false);
+                        }
+                    } else {
+                        const errorMsg = data.message || data.error || 'Gagal membuat sesi pembayaran';
+                        const debugInfo = data.debug ? '\n\nDebug: ' + JSON.stringify(data.debug, null, 2) : '';
+                        alert('Error: ' + errorMsg + debugInfo);
+                    }
+                } catch (error) {
+                    console.error('Checkout session error:', error);
+                    alert('Terjadi kesalahan saat menghubungi server. Silakan coba lagi.');
+                } finally {
+                    // Re-enable button
+                    btn.prop('disabled', false).html('Buat Transaksi');
+                }
             });
 
             var table = $('#transactions-table').DataTable({
