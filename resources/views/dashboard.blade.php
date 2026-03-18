@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium">Saldo Tersedia</h3>
-                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">Rp {{ number_format($total_saldo, 0, ',', '.') }}</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">Rp {{ number_format($total_saldo, 2, ',', '.') }}</p>
                 <div class="mt-2 flex items-center gap-2 text-xs">
                     <span class="text-emerald-500 font-bold">Produksi</span>
                     <span class="text-gray-400">Total bersih semua proyek</span>

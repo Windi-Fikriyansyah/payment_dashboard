@@ -79,7 +79,7 @@
                     </div>
                     <!-- <div class="flex justify-between items-center">
                         <span class="text-gray-500 font-medium whitespace-nowrap">Saldo Tertunda:</span>
-                        <span class="text-gray-900 dark:text-white font-bold">Rp {{ number_format($project->saldo_tertunda, 0, ',', '.') }}</span>
+                        <span class="text-gray-900 dark:text-white font-bold">Rp {{ number_format($project->saldo_tertunda, 2, ',', '.') }}</span>
                     </div> -->
                     <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-900/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 my-2">
                         <span class="text-gray-500 font-medium whitespace-nowrap">Fee By Merchant:</span>

@@ -84,7 +84,7 @@ class ProjectController extends Controller
 
         return DataTables::of($projects)
             ->addColumn('total_transaksi_format', function ($row) {
-            return 'Rp ' . number_format($row->total_transaksi, 0, ',', '.');
+            return 'Rp ' . number_format($row->total_transaksi, 2, ',', '.');
         })
             ->addColumn('aksi', function ($row) {
             $encrypted_id = Crypt::encryptString($row->id);

@@ -45,7 +45,7 @@
                             <span class="font-bold text-gray-900 dark:text-white">@if(strtolower($method->code) == 'qris')
              0.7% +
         @endif
-        Rp {{ number_format($method->fee_flat, 0, ',', '.') }}</span>
+        Rp {{ number_format($method->fee_flat, 2, ',', '.') }}</span>
                         </div>
                     </div>
 

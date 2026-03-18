@@ -96,7 +96,7 @@ class PenarikanController extends Controller
             if ($current_balance < $amount) {
                 return response()->json([
                     'success' => false, 
-                    'message' => 'Saldo tidak mencukupi. Saldo saat ini: Rp ' . number_format($current_balance, 0, ',', '.')
+                    'message' => 'Saldo tidak mencukupi. Saldo saat ini: Rp ' . number_format($current_balance, 2, ',', '.')
                 ], 422);
             }
 
@@ -125,7 +125,7 @@ class PenarikanController extends Controller
                 'penarikan_id' => $penarikan_id,
                 'amount' => $amount,
                 'type' => 'debit',
-                'description' => "Penarikan Dana #{$penarikan_id} (Net: Rp " . number_format($net_amount, 0, ',', '.') . " ke {$penerima})",
+                'description' => "Penarikan Dana #{$penarikan_id} (Net: Rp " . number_format($net_amount, 2, ',', '.') . " ke {$penerima})",
                 'created_at' => now(),
             ]);
 
@@ -159,13 +159,13 @@ class PenarikanController extends Controller
 
         return DataTables::of($penarikan)
             ->editColumn('jumlah', function($row) {
-                return 'Rp ' . number_format($row->jumlah, 0, ',', '.');
+                return 'Rp ' . number_format($row->jumlah, 2, ',', '.');
             })
             ->editColumn('fee', function($row) {
-                return 'Rp ' . number_format($row->fee, 0, ',', '.');
+                return 'Rp ' . number_format($row->fee, 2, ',', '.');
             })
             ->editColumn('total_terima', function($row) {
-                return 'Rp ' . number_format($row->total_terima, 0, ',', '.');
+                return 'Rp ' . number_format($row->total_terima, 2, ',', '.');
             })
             ->editColumn('created_at', function($row) {
                 return date('d M Y, H:i', strtotime($row->created_at));

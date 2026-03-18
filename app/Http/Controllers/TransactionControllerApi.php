@@ -70,13 +70,13 @@ class TransactionControllerApi extends Controller
                 return date('d M Y, H:i', strtotime($row->created_at));
             })
             ->addColumn('amount_format', function($row) {
-                return 'Rp ' . number_format($row->amount, 0, ',', '.');
+                return 'Rp ' . number_format($row->amount, 2, ',', '.');
             })
             ->addColumn('fee_format', function($row) {
-                return 'Rp ' . number_format($row->fee, 0, ',', '.');
+                return 'Rp ' . number_format($row->fee, 2, ',', '.');
             })
             ->addColumn('total_format', function($row) {
-                return 'Rp ' . number_format($row->total_payment, 0, ',', '.');
+                return 'Rp ' . number_format($row->total_payment, 2, ',', '.');
             })
             ->addColumn('status_badge', function($row) {
                 $color = 'gray';

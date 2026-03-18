@@ -48,7 +48,7 @@
                                 <span class="font-bold text-blue-600">
                                     {{ $qris->fee_percent * 100 }}% 
                                     @if($qris->fee_flat > 0)
-                                        + Rp {{ number_format($qris->fee_flat, 0, ',', '.') }}
+                                        + Rp {{ number_format($qris->fee_flat, 2, ',', '.') }}
                                     @endif
                                 </span>
                             </div>
@@ -86,7 +86,7 @@
                                     @endif
                                     @if($method->fee_flat > 0)
                                         @if($method->fee_percent > 0) + @endif
-                                        Rp {{ number_format($method->fee_flat, 0, ',', '.') }}
+                                        Rp {{ number_format($method->fee_flat, 2, ',', '.') }}
                                     @endif
                                 </span>
                             </div>

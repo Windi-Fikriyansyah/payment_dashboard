@@ -79,19 +79,19 @@
                     <div class="space-y-6">
                         <div class="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Jumlah</span>
-                            <span class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</span>
+                            <span class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ number_format($transaction->amount, 2, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Diterima</span>
-                            <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">Rp {{ number_format($transaction->total_payment - $transaction->fee, 0, ',', '.') }}</span>
+                            <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400">Rp {{ number_format($transaction->total_payment - $transaction->fee, 2, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Biaya Admin</span>
-                            <span class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ number_format($transaction->amount == $transaction->total_payment ? 0 : $transaction->fee, 0, ',', '.') }}</span>
+                            <span class="text-sm font-bold text-gray-900 dark:text-white">Rp {{ number_format($transaction->amount == $transaction->total_payment ? 0 : $transaction->fee, 2, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Bayar</span>
-                            <span class="text-base font-black text-gray-900 dark:text-white font-mono">Rp {{ number_format($transaction->total_payment, 0, ',', '.') }}</span>
+                            <span class="text-base font-black text-gray-900 dark:text-white font-mono">Rp {{ number_format($transaction->total_payment, 2, ',', '.') }}</span>
                         </div>
                         <div class="flex justify-between items-center pb-3 border-b border-gray-50 dark:border-gray-700">
                             <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Dibayar Pada</span>
