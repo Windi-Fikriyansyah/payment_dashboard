@@ -28,10 +28,16 @@ class ProjectController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'webhook_url' => 'nullable|url|max:255',
+            'bot_whatsapp' => 'nullable|boolean',
+            'no_whatsapp' => 'required_if:bot_whatsapp,1|nullable|string|regex:/^62[0-9]+$/|unique:projects,no_whatsapp',
+        ], [
+            'no_whatsapp.regex' => 'Nomor WhatsApp harus diawali dengan 62.',
+            'no_whatsapp.required_if' => 'Nomor WhatsApp wajib diisi jika Bot WhatsApp aktif.',
+            'no_whatsapp.unique' => 'Nomor WhatsApp sudah digunakan.',
         ]);
 
         $slug = Str::slug($request->nama);
-        
+
         // Ensure slug is unique
         $originalSlug = $slug;
         $count = 1;
@@ -51,6 +57,8 @@ class ProjectController extends Controller
             'saldo_tertunda' => 0,
             'fee_by_merchant' => false,
             'notifikasi_ke' => '-',
+            'bot_whatsapp' => $request->has('bot_whatsapp') ? (bool)$request->bot_whatsapp : false,
+            'no_whatsapp' => $request->no_whatsapp,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -66,32 +74,32 @@ class ProjectController extends Controller
         $projects = DB::table('projects')
             ->where('user_id', Auth::id())
             ->select([
-                'id', 
-                'nama', 
-                'slug', 
-                'status',
-                'mode',
-                DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = projects.mode AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = projects.mode AND l.type = \'debit\')) as total_transaksi')
-            ]);
+            'id',
+            'nama',
+            'slug',
+            'status',
+            'mode',
+            DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = projects.mode AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = projects.mode AND l.type = \'debit\')) as total_transaksi')
+        ]);
 
         return DataTables::of($projects)
-            ->addColumn('total_transaksi_format', function($row) {
-                return 'Rp ' . number_format($row->total_transaksi, 0, ',', '.');
-            })
-            ->addColumn('aksi', function($row) {
-                $encrypted_id = Crypt::encryptString($row->id);
-                $detailBtn = '<a href="' . route('proyek.show', $encrypted_id) . '" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg text-xs font-bold hover:bg-blue-100 hover:text-blue-700 transition-colors dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-800 dark:hover:text-blue-300">' .
-                                '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>' .
-                                'Detail' .
-                             '</a>';
+            ->addColumn('total_transaksi_format', function ($row) {
+            return 'Rp ' . number_format($row->total_transaksi, 0, ',', '.');
+        })
+            ->addColumn('aksi', function ($row) {
+            $encrypted_id = Crypt::encryptString($row->id);
+            $detailBtn = '<a href="' . route('proyek.show', $encrypted_id) . '" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg text-xs font-bold hover:bg-blue-100 hover:text-blue-700 transition-colors dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-800 dark:hover:text-blue-300">' .
+                '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.522 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>' .
+                'Detail' .
+                '</a>';
 
-                $paymentBtn = '<a href="' . route('proyek.pembayaran', $encrypted_id) . '" class="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg text-xs font-bold hover:bg-emerald-100 hover:text-emerald-700 transition-colors dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-800 dark:hover:text-emerald-300">' .
-                                '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>' .
-                                'Pembayaran' .
-                             '</a>';
+            $paymentBtn = '<a href="' . route('proyek.pembayaran', $encrypted_id) . '" class="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-lg text-xs font-bold hover:bg-emerald-100 hover:text-emerald-700 transition-colors dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-800 dark:hover:text-emerald-300">' .
+                '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>' .
+                'Pembayaran' .
+                '</a>';
 
-                return '<div class="flex items-center justify-center gap-2">' . $detailBtn . $paymentBtn . '</div>';
-            })
+            return '<div class="flex items-center justify-center gap-2">' . $detailBtn . $paymentBtn . '</div>';
+        })
             ->rawColumns(['aksi'])
             ->make(true);
     }
@@ -103,7 +111,8 @@ class ProjectController extends Controller
     {
         try {
             $id = Crypt::decryptString($id_encrypted);
-        } catch (DecryptException $e) {
+        }
+        catch (DecryptException $e) {
             abort(404);
         }
 
@@ -111,9 +120,9 @@ class ProjectController extends Controller
             ->where('projects.id', $id)
             ->where('projects.user_id', Auth::id())
             ->select([
-                'projects.*',
-                DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = projects.mode AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = projects.mode AND l.type = \'debit\')) as total_transaksi')
-            ])
+            'projects.*',
+            DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = projects.mode AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = projects.mode AND l.type = \'debit\')) as total_transaksi')
+        ])
             ->first();
 
         if (!$project) {
@@ -133,7 +142,8 @@ class ProjectController extends Controller
     {
         try {
             $id = Crypt::decryptString($id_encrypted);
-        } catch (DecryptException $e) {
+        }
+        catch (DecryptException $e) {
             abort(404);
         }
 
@@ -155,7 +165,8 @@ class ProjectController extends Controller
             // User requirement: apikey changed when switching to production or within production
             if ($mode === 'production' && $project->mode !== 'production') {
                 $apiKey = 'PK_' . Str::random(40);
-            } elseif ($mode === 'sandbox' && $project->mode !== 'sandbox') {
+            }
+            elseif ($mode === 'sandbox' && $project->mode !== 'sandbox') {
                 $apiKey = 'SB_' . Str::random(40);
             }
 
@@ -164,8 +175,22 @@ class ProjectController extends Controller
         }
 
         if ($request->has('nama')) {
-            $request->validate(['nama' => 'required|string|max:255', 'webhook_url' => 'nullable|url|max:255']);
+            $request->validate([
+                'nama' => 'required|string|max:255',
+                'webhook_url' => 'nullable|url|max:255',
+                'bot_whatsapp' => 'nullable|boolean',
+                'no_whatsapp' => "required_if:bot_whatsapp,1|nullable|string|regex:/^62[0-9]+$/|unique:projects,no_whatsapp,{$id}",
+            ], [
+                'no_whatsapp.regex' => 'Nomor WhatsApp harus diawali dengan 62.',
+                'no_whatsapp.required_if' => 'Nomor WhatsApp wajib diisi jika Bot WhatsApp aktif.',
+                'no_whatsapp.unique' => 'Nomor WhatsApp sudah digunakan oleh proyek lain.',
+            ]);
             $updateData['nama'] = $request->nama;
+            $updateData['bot_whatsapp'] = $request->has('bot_whatsapp') ? (bool)$request->bot_whatsapp : false;
+            $updateData['no_whatsapp'] = $request->no_whatsapp;
+            if ($request->has('webhook_url')) {
+                $updateData['webhook_url'] = $request->webhook_url;
+            }
         }
 
         if ($request->has('status')) {
@@ -176,12 +201,19 @@ class ProjectController extends Controller
             $updateData['fee_by_merchant'] = $request->fee_by_merchant;
         }
 
-        if ($request->has('webhook_url')) {
+        if ($request->has('webhook_url') && !$request->has('nama')) {
             $updateData['webhook_url'] = $request->webhook_url;
         }
 
         if ($request->has('notifikasi_ke')) {
             $updateData['notifikasi_ke'] = $request->notifikasi_ke;
+        }
+
+        if ($request->has('bot_whatsapp_toggle')) {
+            $updateData['bot_whatsapp'] = $request->bot_whatsapp == '1' ? true : false;
+            if (!$updateData['bot_whatsapp']) {
+                $updateData['no_whatsapp'] = null;
+            }
         }
 
         DB::table('projects')->where('id', $id)->update($updateData);
@@ -196,7 +228,8 @@ class ProjectController extends Controller
     {
         try {
             $id = Crypt::decryptString($id_encrypted);
-        } catch (DecryptException $e) {
+        }
+        catch (DecryptException $e) {
             abort(404);
         }
 
@@ -221,7 +254,8 @@ class ProjectController extends Controller
     {
         try {
             $id = Crypt::decryptString($id_encrypted);
-        } catch (DecryptException $e) {
+        }
+        catch (DecryptException $e) {
             abort(404);
         }
 
@@ -240,14 +274,14 @@ class ProjectController extends Controller
         $payment_methods = DB::table('payment_methods')
             ->where('is_active', true)
             ->get()
-            ->map(function($method) use ($id) {
-                // Cast to int for safe comparison
-                $method->is_enabled = DB::table('project_payment_methods')
-                    ->where('project_id', (int)$id)
-                    ->where('payment_method_id', (int)$method->id)
-                    ->exists();
-                return $method;
-            });
+            ->map(function ($method) use ($id) {
+            // Cast to int for safe comparison
+            $method->is_enabled = DB::table('project_payment_methods')
+                ->where('project_id', (int)$id)
+                ->where('payment_method_id', (int)$method->id)
+                ->exists();
+            return $method;
+        });
 
         return view('proyek.pembayaran', compact('project', 'payment_methods'));
     }
@@ -259,7 +293,8 @@ class ProjectController extends Controller
     {
         try {
             $id = Crypt::decryptString($id_encrypted);
-        } catch (DecryptException $e) {
+        }
+        catch (DecryptException $e) {
             return response()->json(['success' => false, 'message' => 'Invalid ID'], 404);
         }
 
@@ -272,8 +307,8 @@ class ProjectController extends Controller
             return response()->json(['success' => false, 'message' => 'Project not found'], 404);
         }
 
-        $method_id = (int) $request->payment_method_id;
-        
+        $method_id = (int)$request->payment_method_id;
+
         $already_linked = DB::table('project_payment_methods')
             ->where('project_id', (int)$id)
             ->where('payment_method_id', $method_id)
@@ -287,7 +322,8 @@ class ProjectController extends Controller
                 ->delete();
             $new_status = false;
             $message = 'Metode pembayaran dinonaktifkan untuk proyek ini.';
-        } else {
+        }
+        else {
             // "ON": add to project_payment_methods
             DB::table('project_payment_methods')->insert([
                 'project_id' => (int)$id,

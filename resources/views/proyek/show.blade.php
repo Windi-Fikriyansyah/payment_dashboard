@@ -3,7 +3,7 @@
         Detail Proyek: {{ $project->nama }}
     </x-slot>
 
-    <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" x-data="{ showEditModal: {{ $errors->any() ? 'true' : 'false' }}, showApiKey: false, apiKeyCopied: false }">
+    <div class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700" x-data="{ showEditModal: {{ $errors->any() ? 'true' : 'false' }}, showApiKey: false, apiKeyCopied: false, botWhatsapp: {{ old('bot_whatsapp', $project->bot_whatsapp) ? 'true' : 'false' }} }">
         @if (session('success'))
             <div x-data="{ show: true }" x-show="show" class="p-4 mb-4 text-sm text-emerald-800 rounded-lg bg-emerald-50 dark:bg-gray-800 dark:text-emerald-400 relative" role="alert">
                 <span class="font-medium">Berhasil!</span> {{ session('success') }}
@@ -102,6 +102,28 @@
                             {{ $project->webhook_url ?: 'N/A' }}
                         </div>
                     </div>
+                    <div class="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-4 mt-2">
+                        <span class="text-gray-500 font-medium whitespace-nowrap">Bot WhatsApp:</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold {{ $project->bot_whatsapp ? 'text-emerald-600' : 'text-gray-500' }}">
+                                {{ $project->bot_whatsapp ? 'Aktif' : 'Nonaktif' }}
+                            </span>
+                    <form action="{{ route('proyek.update', $project->encrypted_id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="bot_whatsapp_toggle" value="1">
+                                <input type="hidden" name="bot_whatsapp" value="{{ $project->bot_whatsapp ? 0 : 1 }}">
+                                <button type="submit" class="text-xs text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 px-3 py-1.5 rounded-lg font-bold hover:scale-105 transition-transform active:scale-95 shadow-md">
+                                    Switch
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    @if($project->bot_whatsapp)
+                    <div class="flex justify-between items-center bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded-2xl border border-emerald-100 dark:border-emerald-800/50 my-2">
+                        <span class="text-emerald-700 dark:text-emerald-400 font-medium">No. WhatsApp:</span>
+                        <span class="text-emerald-800 dark:text-emerald-300 font-bold ml-4">{{ $project->no_whatsapp }}</span>
+                    </div>
+                    @endif
                     <div class="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-4 mt-2">
                         <span class="text-gray-500 font-medium">Kirim Notifikasi Ke:</span>
                         <span class="text-gray-900 dark:text-white font-bold">{{ $project->notifikasi_ke }}</span>
@@ -258,6 +280,21 @@
                                     <option value="1" {{ $project->fee_by_merchant ? 'selected' : '' }}>Ya</option>
                                 </select>
                                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Aktifkan jika Anda ingin menanggung fee transaksi (defaultnya ditanggung oleh customer).</p>
+                            </div>
+
+                            <div>
+                                <label for="bot_whatsapp_edit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Bot WhatsApp</label>
+                                <select name="bot_whatsapp" id="bot_whatsapp_edit" x-model="botWhatsapp" class="mt-2 block w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white px-4 py-3">
+                                    <option value="0">Tidak</option>
+                                    <option value="1">Ya</option>
+                                </select>
+                            </div>
+
+                            <div x-show="botWhatsapp == '1'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0">
+                                <label for="no_whatsapp_edit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor WhatsApp (Awali dengan 62) <span class="text-rose-500">*</span></label>
+                                <input type="text" name="no_whatsapp" id="no_whatsapp_edit" value="{{ old('no_whatsapp', $project->no_whatsapp) }}" class="mt-2 block w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white px-4 py-3" placeholder="Contoh: 628123456789">
+                                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Pastikan nomor dimulai dengan <strong>62</strong> tanpa simbol + atau spasi.</p>
+                                <x-input-error :messages="$errors->get('no_whatsapp')" class="mt-2" />
                             </div>
 
                             <div>

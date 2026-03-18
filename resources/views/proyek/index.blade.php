@@ -3,7 +3,7 @@
         Proyek
     </x-slot>
 
-    <div class="space-y-6" x-data="{ showModal: {{ $errors->any() ? 'true' : 'false' }} }">
+    <div class="space-y-6" x-data="{ showModal: {{ $errors->any() ? 'true' : 'false' }}, botWhatsapp: false }">
         @if (session('success'))
             <div x-data="{ show: true }" x-show="show" class="p-4 mb-4 text-sm text-emerald-800 rounded-lg bg-emerald-50 dark:bg-gray-800 dark:text-emerald-400 relative" role="alert">
                 <span class="font-medium">Berhasil!</span> {{ session('success') }}
@@ -94,6 +94,23 @@
                                 <input type="url" name="webhook_url" id="webhook_url" value="{{ old('webhook_url') }}" class="mt-2 block w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white px-4 py-3" placeholder="https://domain.com/webhook">
                                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">URL ini akan menerima notifikasi transaksi secara otomatis.</p>
                                 <x-input-error :messages="$errors->get('webhook_url')" class="mt-2" />
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-5">
+                                <div>
+                                    <label for="bot_whatsapp" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Bot WhatsApp</label>
+                                    <select name="bot_whatsapp" id="bot_whatsapp" x-model="botWhatsapp" class="mt-2 block w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white px-4 py-3">
+                                        <option value="0">Tidak</option>
+                                        <option value="1">Ya</option>
+                                    </select>
+                                </div>
+
+                                <div x-show="botWhatsapp == '1'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0">
+                                    <label for="no_whatsapp" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nomor WhatsApp (Awali dengan 62) <span class="text-rose-500">*</span></label>
+                                    <input type="text" name="no_whatsapp" id="no_whatsapp" value="{{ old('no_whatsapp') }}" class="mt-2 block w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white px-4 py-3" placeholder="Contoh: 628123456789">
+                                    <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Pastikan nomor dimulai dengan <strong>62</strong>.</p>
+                                    <x-input-error :messages="$errors->get('no_whatsapp')" class="mt-2" />
+                                </div>
                             </div>
                         </div>
                         
