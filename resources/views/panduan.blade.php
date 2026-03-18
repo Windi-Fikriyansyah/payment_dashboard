@@ -1,58 +1,13 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dokumentasi API - LinkBayar Indonesia</title>
-    <meta name="description" content="Dokumentasi lengkap API LinkBayar untuk integrasi pembayaran QRIS, Virtual Account, dan Checkout Page ke website atau aplikasi Anda.">
+<x-public-layout>
+    <x-slot:title>Dokumentasi API - LinkBayar Indonesia</x-slot:title>
+    <x-slot:metaDescription>Dokumentasi lengkap API LinkBayar untuk integrasi pembayaran QRIS, Virtual Account, dan Checkout Page ke website atau aplikasi Anda.</x-slot:metaDescription>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    @push('fonts')
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    @endpush
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Alpine.js -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
+    @push('styles')
     <style>
-        body {
-            font-family: 'Outfit', sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .dark .glass {
-            background: rgba(17, 24, 39, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .animate-gradient {
-            background-size: 200% 200%;
-            animation: gradient 8s ease infinite;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .hero-shape {
-            position: absolute;
-            z-index: -1;
-            filter: blur(80px);
-            opacity: 0.5;
-        }
-
         .code-font {
             font-family: 'JetBrains Mono', monospace;
         }
@@ -106,67 +61,7 @@
             scroll-margin-top: 100px;
         }
     </style>
-</head>
-<body class="bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-50 glass shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center">
-                    <a href="{{ route('home') }}">
-                        <img src="{{ asset('image/logo.webp') }}" alt="Linkbayar Logo" class="h-36 w-auto -my-6">
-                    </a>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('home') }}" class="text-sm font-semibold hover:text-blue-600 transition-colors">Beranda</a>
-                    <a href="{{ route('biaya') }}" class="text-sm font-semibold hover:text-blue-600 transition-colors">Biaya</a>
-                    <a href="{{ route('panduan') }}" class="text-sm font-semibold text-blue-600 transition-colors">Panduan API</a>
-                    
-                    @if (Route::has('login'))
-                        <div class="flex items-center gap-4">
-                            @auth
-                                <a href="{{ url('/dashboard') }}" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all active:scale-95">Dashboard</a>
-                            @else
-                                <a href="{{ route('login') }}" class="text-sm font-semibold hover:text-blue-600 transition-colors">Masuk</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="px-6 py-2.5 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all active:scale-95">Daftar Sekarang</a>
-                                @endif
-                            @endauth
-                        </div>
-                    @endif
-                </div>
-
-                <!-- Mobile Button -->
-                <div class="md:hidden flex items-center" x-data="{ mobileOpen: false }">
-                    <button @click="mobileOpen = !mobileOpen" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                        </svg>
-                    </button>
-                    <!-- Mobile Menu Dropdown -->
-                    <div x-show="mobileOpen" @click.away="mobileOpen = false" x-transition
-                         class="absolute top-20 right-4 w-64 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 p-4 space-y-2">
-                        <a href="{{ route('home') }}" class="block px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-sm transition-colors">Beranda</a>
-                        <a href="{{ route('biaya') }}" class="block px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-sm transition-colors">Biaya</a>
-                        <a href="{{ route('panduan') }}" class="block px-4 py-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 font-bold text-sm">Panduan API</a>
-                        @if (Route::has('login'))
-                            @auth
-                                <a href="{{ url('/dashboard') }}" class="block px-4 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm text-center">Dashboard</a>
-                            @else
-                                <a href="{{ route('login') }}" class="block px-4 py-3 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-sm transition-colors">Masuk</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="block px-4 py-3 rounded-xl bg-gray-900 dark:bg-white dark:text-gray-900 text-white font-bold text-sm text-center">Daftar</a>
-                                @endif
-                            @endauth
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    @endpush
 
     <!-- Hero Header -->
     <section class="relative pt-32 pb-16 lg:pt-44 lg:pb-20 overflow-hidden">
@@ -254,7 +149,7 @@
             <!-- 1. Pendahuluan -->
             <!-- ======================== -->
             <div id="pendahuluan" class="doc-section bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-                <div class="p-8 lg:p-10">
+                <div class="p-6 sm:p-8 lg:p-10">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -306,7 +201,7 @@
             <!-- 2. Persiapan -->
             <!-- ======================== -->
             <div id="persiapan" class="doc-section bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-                <div class="p-8 lg:p-10">
+                <div class="p-6 sm:p-8 lg:p-10">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -367,7 +262,7 @@
             <!-- 3. Autentikasi -->
             <!-- ======================== -->
             <div id="autentikasi" class="doc-section bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-                <div class="p-8 lg:p-10">
+                <div class="p-6 sm:p-8 lg:p-10">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-amber-100 dark:bg-amber-900/30 text-amber-600 rounded-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -392,7 +287,7 @@
             <!-- 4. Daftar API -->
             <!-- ======================== -->
             <div id="daftar-api" class="doc-section bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-                <div class="p-8 lg:p-10">
+                <div class="p-6 sm:p-8 lg:p-10">
                     <div class="flex items-center gap-4 mb-8">
                         <div class="p-3 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 rounded-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -408,14 +303,14 @@
                         <div class="border-t border-gray-100 dark:border-gray-700 pt-8 first:border-0 first:pt-0">
                             <div class="flex flex-wrap items-center gap-3 mb-4">
                                 <span class="px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold uppercase tracking-wider">POST</span>
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">A. Membuat Transaksi (Direct API)</h3>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">A. Membuat Transaksi (Direct API)</h3>
                             </div>
                             <p class="text-gray-600 dark:text-gray-400 mb-6">Gunakan API ini jika Anda ingin membuat halaman checkout sendiri.</p>
                             
                             <div class="space-y-6">
-                                <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                                <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
                                     <div class="code-font text-xs text-gray-400 mb-2">// Method: POST</div>
-                                    <div class="code-font text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/transactioncreate/{method}</div>
+                                    <div class="code-font text-xs sm:text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/transactioncreate/{method}</div>
                                 </div>
 
                                 <div class="code-block bg-gray-950 rounded-xl p-4 overflow-auto">
@@ -425,7 +320,7 @@
 
                                 <div>
                                     <h4 class="font-bold text-gray-900 dark:text-white mb-3">Body (JSON)</h4>
-                                    <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                                    <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "project": "nama_project_anda",
     "order_id": "INV123",
@@ -436,7 +331,7 @@
 
                                 <div>
                                     <h4 class="font-bold text-gray-900 dark:text-white mb-3">Response Sukses</h4>
-                                    <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                                    <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "payment": {
         "project": "nama_project_anda",
@@ -459,13 +354,13 @@
                         <div class="border-t border-gray-100 dark:border-gray-700 pt-8">
                             <div class="flex flex-wrap items-center gap-3 mb-4">
                                 <span class="px-3 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold uppercase tracking-wider">POST</span>
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">B. Integrasi Via URL (Checkout Page) 🚀</h3>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">B. Integrasi Via URL (Checkout Page) 🚀</h3>
                             </div>
                             <p class="text-gray-600 dark:text-gray-400 mb-6">Metode ini paling aman dan profesional. URL yang dihasilkan sangat pendek dan parameter aslinya tersembunyi.</p>
                             
                             <div class="space-y-6">
                                 <!-- Langkah 1 -->
-                                <div class="bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-gray-900/50 dark:to-blue-900/10 p-6 lg:p-8 rounded-2xl border border-gray-100 dark:border-gray-700">
+                                <div class="bg-gradient-to-br from-gray-50 to-blue-50/30 dark:from-gray-900/50 dark:to-blue-900/10 p-4 sm:p-6 lg:p-8 rounded-2xl border border-gray-100 dark:border-gray-700">
                                     <h4 class="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
                                         <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm font-bold shadow-lg shadow-blue-500/20">1</span>
                                         <span>Buat Sesi Pembayaran (Server-to-Server)</span>
@@ -486,7 +381,7 @@
                                             <div class="code-block bg-gray-950 p-4 rounded-xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "amount": 50000,
-    "order_id": "INV-123",
+    "order_id": "INV123",
     "redirect_url": "https://tokoanda.com/success"
 }</pre>
                                             </div>
@@ -496,7 +391,7 @@
                                             <div class="code-block bg-gray-950 p-4 rounded-xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "payment_url": "https://app.linkbayar.my.id/pay/tokoonline/e8ff1622749f6a48...",
-    "order_id": "INV-123",
+    "order_id": "INV123",
     "amount": 50000
 }</pre>
                                             </div>
@@ -505,7 +400,7 @@
                                 </div>
 
                                 <!-- Langkah 2 -->
-                                <div class="bg-gradient-to-br from-gray-50 to-indigo-50/30 dark:from-gray-900/50 dark:to-indigo-900/10 p-6 lg:p-8 rounded-2xl border border-gray-100 dark:border-gray-700">
+                                <div class="bg-gradient-to-br from-gray-50 to-indigo-50/30 dark:from-gray-900/50 dark:to-indigo-900/10 p-4 sm:p-6 lg:p-8 rounded-2xl border border-gray-100 dark:border-gray-700">
                                     <h4 class="font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-3">
                                         <span class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm font-bold shadow-lg shadow-blue-500/20">2</span>
                                         <span>Arahkan Pelanggan</span>
@@ -532,14 +427,14 @@
                         <div class="border-t border-gray-100 dark:border-gray-700 pt-8">
                             <div class="flex flex-wrap items-center gap-3 mb-4">
                                 <span class="px-3 py-1.5 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold uppercase tracking-wider">GET</span>
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">C. Cek Status/Detail Transaksi</h3>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">C. Cek Status/Detail Transaksi</h3>
                             </div>
                             <p class="text-gray-600 dark:text-gray-400 mb-6">Gunakan API ini untuk mendapatkan detail lengkap transaksi.</p>
                             
                             <div class="space-y-4">
-                                <div class="code-block bg-gray-950 rounded-2xl p-6 overflow-auto">
+                                <div class="code-block bg-gray-950 rounded-2xl p-4 sm:p-6 overflow-auto">
                                     <div class="code-font text-xs text-gray-400 mb-1">// Method: GET</div>
-                                    <div class="code-font text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/transactiondetail?order_id=INV-123</div>
+                                    <div class="code-font text-xs sm:text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/transactiondetail?order_id=INV123</div>
                                 </div>
                                 <div class="code-block bg-gray-950 rounded-xl p-4 overflow-auto">
                                     <div class="code-font text-xs text-gray-400 mb-1">// Headers</div>
@@ -548,7 +443,7 @@
 
                                 <div>
                                     <h4 class="font-bold text-gray-900 dark:text-white mb-3">Response Sukses</h4>
-                                    <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                                    <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "transaction": {
         "amount": 50000,
@@ -570,14 +465,14 @@
                         <div class="border-t border-gray-100 dark:border-gray-700 pt-8">
                             <div class="flex flex-wrap items-center gap-3 mb-4">
                                 <span class="px-3 py-1.5 bg-rose-100 text-rose-700 rounded-lg text-xs font-bold uppercase tracking-wider">POST</span>
-                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">D. Batalkan Transaksi</h3>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">D. Batalkan Transaksi</h3>
                             </div>
                             <p class="text-gray-600 dark:text-gray-400 mb-6">Membatalkan transaksi yang masih berstatus <code class="bg-rose-100 dark:bg-rose-900/30 px-2 py-1 rounded-lg text-rose-600 text-xs code-font font-bold">pending</code>.</p>
                             
                             <div class="space-y-6">
-                                <div class="code-block bg-gray-950 rounded-2xl p-6 overflow-auto">
+                                <div class="code-block bg-gray-950 rounded-2xl p-4 sm:p-6 overflow-auto">
                                     <div class="code-font text-xs text-gray-400 mb-1">// Method: POST</div>
-                                    <div class="code-font text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/transactioncancel</div>
+                                    <div class="code-font text-xs sm:text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/transactioncancel</div>
                                 </div>
                                 <div class="code-block bg-gray-950 rounded-xl p-4 overflow-auto">
                                     <div class="code-font text-xs text-gray-400 mb-1">// Headers</div>
@@ -585,10 +480,10 @@
                                 </div>
                                 <div>
                                     <h4 class="font-bold text-gray-900 dark:text-white mb-3">Body (JSON)</h4>
-                                    <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                                    <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "project": "nama_project_anda",
-    "order_id": "INV-123",
+    "order_id": "INV123",
     "amount": 50000
 }</pre>
                                     </div>
@@ -596,7 +491,7 @@
 
                                 <div>
                                     <h4 class="font-bold text-gray-900 dark:text-white mb-3">Response Sukses</h4>
-                                    <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                                    <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "message": "Transaction cancelled"
 }</pre>
@@ -612,7 +507,7 @@
             <!-- 5. Webhook -->
             <!-- ======================== -->
             <div id="webhook" class="doc-section bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-                <div class="p-8 lg:p-10">
+                <div class="p-6 sm:p-8 lg:p-10">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -627,7 +522,7 @@
 
                         <div>
                             <h4 class="font-bold text-gray-900 dark:text-white mb-3">Payload (JSON):</h4>
-                            <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                            <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "amount": 50000,
     "fee": 2500,
@@ -648,7 +543,7 @@
             <!-- 6. Testing & Sandbox -->
             <!-- ======================== -->
             <div id="testing" class="doc-section bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
-                <div class="p-8 lg:p-10">
+                <div class="p-6 sm:p-8 lg:p-10">
                     <div class="flex items-center gap-4 mb-6">
                         <div class="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-2xl">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -661,9 +556,9 @@
                     <div class="space-y-6">
                         <p class="text-gray-600 dark:text-gray-400">Pastikan project Anda dalam mode <span class="font-bold text-indigo-600">Sandbox</span> saat melakukan pengujian. Anda dapat mensimulasikan pembayaran sukses melalui API simulation:</p>
                         
-                        <div class="code-block bg-gray-950 rounded-2xl p-6 overflow-auto">
+                        <div class="code-block bg-gray-950 rounded-2xl p-4 sm:p-6 overflow-auto">
                             <div class="code-font text-xs text-gray-400 mb-1">// Method: POST</div>
-                            <div class="code-font text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/paymentsimulation</div>
+                            <div class="code-font text-xs sm:text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/paymentsimulation</div>
                         </div>
 
                         <div class="code-block bg-gray-950 rounded-xl p-4 overflow-auto">
@@ -673,7 +568,7 @@
 
                         <div>
                             <h4 class="font-bold text-gray-900 dark:text-white mb-3">Body (JSON)</h4>
-                            <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                            <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "project": "nama_project_anda",
     "order_id": "INV123",
@@ -684,7 +579,7 @@
 
                         <div>
                             <h4 class="font-bold text-gray-900 dark:text-white mb-3">Response Sukses</h4>
-                            <div class="code-block bg-gray-950 p-6 rounded-2xl overflow-auto">
+                            <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
 <pre class="code-font text-xs text-emerald-400">{
     "message": "Simulation successful for INV123",
     "status": "success"
@@ -700,7 +595,7 @@
             <!-- ======================== -->
             <div id="bantuan" class="doc-section bg-gradient-to-br from-slate-900 to-blue-900 rounded-3xl overflow-hidden shadow-xl relative">
                 <div class="hero-shape top-0 right-0 w-64 h-64 bg-blue-500/30"></div>
-                <div class="p-8 lg:p-12 text-center relative z-10">
+                <div class="p-6 sm:p-8 lg:p-12 text-center relative z-10">
                     <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -709,11 +604,11 @@
                     <h3 class="text-2xl font-bold text-white mb-3">7. Bantuan</h3>
                     <p class="text-blue-200 mb-8 max-w-lg mx-auto">Jika ada kendala, hubungi tim teknis kami:</p>
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="mailto:support@linkbayar.my.id" class="px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold hover:bg-gray-100 transition-all shadow-xl hover:-translate-y-1 flex items-center justify-center gap-2">
+                        <a href="mailto:support@linkbayar.my.id" class="px-6 sm:px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold hover:bg-gray-100 transition-all shadow-xl hover:-translate-y-1 flex items-center justify-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                             support@linkbayar.my.id
                         </a>
-                        <a href="https://app.linkbayar.my.id" class="px-8 py-4 bg-white/10 text-white border border-white/20 rounded-2xl font-bold hover:bg-white/20 transition-all flex items-center justify-center gap-2">
+                        <a href="https://app.linkbayar.my.id" class="px-6 sm:px-8 py-4 bg-white/10 text-white border border-white/20 rounded-2xl font-bold hover:bg-white/20 transition-all flex items-center justify-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
                             linkbayar.my.id
                         </a>
@@ -723,45 +618,4 @@
 
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div class="flex items-center">
-                <a href="{{ route('home') }}">
-                    <img src="{{ asset('image/logo.webp') }}" alt="Linkbayar Logo" class="h-36 w-auto -my-6">
-                </a>
-            </div>
-            
-            <div class="flex items-center gap-8 text-sm">
-                <a href="{{ route('home') }}" class="hover:text-white transition-colors">Beranda</a>
-                <a href="{{ route('biaya') }}" class="hover:text-white transition-colors">Biaya</a>
-                <a href="{{ route('panduan') }}" class="text-blue-400 hover:text-blue-300 transition-colors font-semibold">Panduan</a>
-                @if (Route::has('login'))
-                    <a href="{{ route('login') }}" class="hover:text-white transition-colors">Login</a>
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="hover:text-white transition-colors">Register</a>
-                    @endif
-                @endif
-            </div>
-
-            <div class="text-xs">
-                &copy; {{ date('Y') }} Linkbayar Indonesia. All rights reserved.
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+</x-public-layout>

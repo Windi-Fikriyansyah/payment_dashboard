@@ -1,95 +1,5 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Biaya Layanan - Linkbayar Indonesia</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        body {
-            font-family: 'Outfit', sans-serif;
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .dark .glass {
-            background: rgba(17, 24, 39, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .animate-gradient {
-            background-size: 200% 200%;
-            animation: gradient 8s ease infinite;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .hero-shape {
-            position: absolute;
-            z-index: -1;
-            filter: blur(80px);
-            opacity: 0.5;
-        }
-    </style>
-</head>
-<body class="bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-50 glass shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center">
-                    <a href="{{ route('home') }}">
-                        <img src="{{ asset('image/logo.webp') }}" alt="Linkbayar Logo" class="h-36 w-auto -my-6">
-                    </a>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('home') }}" class="text-sm font-semibold hover:text-blue-600 transition-colors">Beranda</a>
-                    <a href="{{ route('biaya') }}" class="text-sm font-semibold text-blue-600 transition-colors">Biaya</a>
-                    
-                    @if (Route::has('login'))
-                        <div class="flex items-center gap-4">
-                            @auth
-                                <a href="{{ url('/dashboard') }}" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all active:scale-95">Dashboard</a>
-                            @else
-                                <a href="{{ route('login') }}" class="text-sm font-semibold hover:text-blue-600 transition-colors">Masuk</a>
-                                @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="px-6 py-2.5 bg-gray-900 dark:bg-white dark:text-gray-900 text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all active:scale-95">Daftar Sekarang</a>
-                                @endif
-                            @endauth
-                        </div>
-                    @endif
-                </div>
-
-                <!-- Mobile Button -->
-                <div class="md:hidden flex items-center">
-                    <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
+<x-public-layout>
+    <x-slot:title>Biaya Layanan - Linkbayar Indonesia</x-slot:title>
 
     <!-- Header Section -->
     <section class="relative pt-32 pb-16 lg:pt-48 lg:pb-24 overflow-hidden">
@@ -124,7 +34,6 @@
                     <div class="p-6 rounded-3xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all">
                         <div class="flex items-center justify-between mb-6">
                             <img src="https://ik.imagekit.io/tg7tsodt8/about/bank/images.png" alt="QRIS" class="h-10 object-contain">
-                            <span class="px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-xs font-bold uppercase">Semua E-Wallet</span>
                         </div>
                         <h3 class="text-xl font-bold mb-4">QRIS Instan</h3>
                         <div class="space-y-3">
@@ -132,8 +41,6 @@
                                 <span class="text-gray-500">Biaya</span>
                                 <span class="font-bold text-blue-600">0.7% + Rp 310</span>
                             </div>
-                            
-                        
                         </div>
                     </div>
                 </div>
@@ -177,7 +84,6 @@
                                 <span class="text-gray-500">Biaya</span>
                                 <span class="font-bold text-blue-600">Rp {{ $method['fee'] }}</span>
                             </div>
-                            
                         </div>
                     </div>
                     @endforeach
@@ -194,32 +100,8 @@
                             <p><span class="text-blue-400 font-bold">Catatan:</span> QRIS untuk nominal diatas Rp 100.000, biayanya menjadi <strong>1% + Rp 0</strong></p>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div class="flex items-center">
-                <a href="{{ route('home') }}">
-                    <img src="{{ asset('image/logo.webp') }}" alt="Linkbayar Logo" class="h-36 w-auto -my-6">
-                </a>
-            </div>
-            
-            <div class="flex items-center gap-8 text-sm">
-                <a href="{{ route('biaya') }}" class="hover:text-white transition-colors">Biaya</a>
-                <a href="{{ route('panduan') }}" class="hover:text-white transition-colors">Panduan</a>
-                <a href="{{ route('login') }}" class="hover:text-white transition-colors">Login</a>
-                <a href="{{ route('register') }}" class="hover:text-white transition-colors">Register</a>
-            </div>
-
-            <div class="text-xs">
-                &copy; {{ date('Y') }} Linkbayar Indonesia. All rights reserved.
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+</x-public-layout>
