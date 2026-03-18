@@ -8,7 +8,10 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/biaya', function () {
-    return view('biaya');
+    $payment_methods = \Illuminate\Support\Facades\DB::table('payment_methods')
+        ->where('is_active', true)
+        ->get();
+    return view('biaya', compact('payment_methods'));
 })->name('biaya');
 
 Route::get('/panduan', function () {

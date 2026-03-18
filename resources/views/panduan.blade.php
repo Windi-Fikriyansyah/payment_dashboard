@@ -518,7 +518,7 @@
                     </div>
                     
                     <div class="space-y-6">
-                        <p class="text-gray-600 dark:text-gray-400 text-lg">Sistem kami akan mengirimkan <span class="font-bold text-red-600">POST</span> ke URL Webhook Anda saat status transaksi berubah (berhasil/expired/batal).</p>
+                        <p class="text-gray-600 dark:text-gray-400 text-lg">Sistem kami akan mengirimkan <span class="font-bold text-red-600">POST</span> ke URL Webhook Anda saat status transaksi berubah (berhasil/expired).</p>
 
                         <div>
                             <h4 class="font-bold text-gray-900 dark:text-white mb-3">Payload (JSON):</h4>

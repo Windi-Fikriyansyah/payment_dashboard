@@ -17,10 +17,16 @@
         </div>
     </section>
 
+    @php
+        $qris = $payment_methods->where('code', 'qris')->first();
+        $va_methods = $payment_methods->where('code', '!=', 'qris');
+    @endphp
+
     <!-- Content Section -->
     <section class="pb-24">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- QRIS Section -->
+            @if($qris)
             <div class="mb-16">
                 <div class="flex items-center gap-4 mb-8">
                     <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
@@ -33,20 +39,27 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="p-6 rounded-3xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all">
                         <div class="flex items-center justify-between mb-6">
-                            <img src="https://ik.imagekit.io/tg7tsodt8/about/bank/images.png" alt="QRIS" class="h-10 object-contain">
+                            <img src="{{ $qris->image_url }}" alt="QRIS" class="h-10 object-contain">
                         </div>
-                        <h3 class="text-xl font-bold mb-4">QRIS Instan</h3>
+                        <h3 class="text-xl font-bold mb-4">{{ $qris->name }}</h3>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center text-sm">
                                 <span class="text-gray-500">Biaya</span>
-                                <span class="font-bold text-blue-600">0.7% + Rp 310</span>
+                                <span class="font-bold text-blue-600">
+                                    {{ $qris->fee_percent * 100 }}% 
+                                    @if($qris->fee_flat > 0)
+                                        + Rp {{ number_format($qris->fee_flat, 0, ',', '.') }}
+                                    @endif
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            @endif
 
             <!-- Virtual Account Section -->
+            @if($va_methods->count() > 0)
             <div>
                 <div class="flex items-center gap-4 mb-8">
                     <div class="w-12 h-12 bg-purple-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-purple-500/20">
@@ -57,38 +70,32 @@
                     <h2 class="text-2xl font-bold">Virtual Account</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    @php
-                        $va_methods = [
-                            ['name' => 'BCA Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/Logo%20BCA_Biru.png', 'fee' => '5.500', 'code' => 'BC'],
-                            ['name' => 'ATM Bersama', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/A1.png', 'fee' => '3.500', 'code' => 'A1'],
-                            ['name' => 'Permata Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/PERMATA.png', 'fee' => '3.500', 'code' => 'BT'],
-                            ['name' => 'Maybank Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/VA.png', 'fee' => '3.500', 'code' => 'VA'],
-                            ['name' => 'Mandiri Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/MV.png', 'fee' => '4.500', 'code' => 'M2'],
-                            ['name' => 'CIMB Niaga Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/B1.png', 'fee' => '3.500', 'code' => 'B1'],
-                            ['name' => 'Artha Graha Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/AG.jpg', 'fee' => '2.000', 'code' => 'AG'],
-                            ['name' => 'BNI Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/I1.png', 'fee' => '3.500', 'code' => 'I1'],
-                            ['name' => 'BNC Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/NC.webp', 'fee' => '3.500', 'code' => 'BN'],
-                            ['name' => 'BRI Virtual Account', 'logo' => 'https://ik.imagekit.io/tg7tsodt8/about/bank/BR.png', 'fee' => '3.500', 'code' => 'BR'],
-                        ];
-                    @endphp
-
                     @foreach($va_methods as $method)
                     <div class="p-6 rounded-3xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all">
                         <div class="flex items-center justify-between mb-6">
-                            <img src="{{ $method['logo'] }}" alt="{{ $method['name'] }}" class="h-8 max-w-[120px] object-contain">
-                            <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-bold uppercase">{{ $method['code'] }}</span>
+                            <img src="{{ $method->image_url }}" alt="{{ $method->name }}" class="h-8 max-w-[120px] object-contain">
+                            <span class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-xs font-bold uppercase">{{ strtoupper($method->code) }}</span>
                         </div>
-                        <h3 class="text-md font-bold mb-4 line-clamp-1">{{ $method['name'] }}</h3>
+                        <h3 class="text-md font-bold mb-4 line-clamp-1">{{ $method->name }}</h3>
                         <div class="space-y-3">
                             <div class="flex justify-between items-center text-sm">
                                 <span class="text-gray-500">Biaya</span>
-                                <span class="font-bold text-blue-600">Rp {{ $method['fee'] }}</span>
+                                <span class="font-bold text-blue-600">
+                                    @if($method->fee_percent > 0)
+                                        {{ $method->fee_percent * 100 }}% 
+                                    @endif
+                                    @if($method->fee_flat > 0)
+                                        @if($method->fee_percent > 0) + @endif
+                                        Rp {{ number_format($method->fee_flat, 0, ',', '.') }}
+                                    @endif
+                                </span>
                             </div>
                         </div>
                     </div>
                     @endforeach
                 </div>
             </div>
+            @endif
 
             <!-- Additional Info -->
             <div class="mt-20 p-8 rounded-[2.5rem] bg-slate-900 text-white relative overflow-hidden">
