@@ -166,7 +166,10 @@
                 const saldo = selected.data('saldo');
                 
                 if (saldo !== undefined) {
-                    const formatted = new Intl.NumberFormat('id-ID').format(saldo);
+                    const formatted = new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }).format(saldo);
                     $('#display_saldo').val(formatted);
                 } else {
                     $('#display_saldo').val('0');

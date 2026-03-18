@@ -75,7 +75,7 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500 font-medium whitespace-nowrap">Total Transaksi:</span>
-                        <span class="text-gray-900 dark:text-white font-bold">Rp {{ number_format($project->total_transaksi, 0, ',', '.') }}</span>
+                        <span class="text-gray-900 dark:text-white font-bold">Rp {{ number_format($project->total_transaksi, 2, ',', '.') }}</span>
                     </div>
                     <!-- <div class="flex justify-between items-center">
                         <span class="text-gray-500 font-medium whitespace-nowrap">Saldo Tertunda:</span>
