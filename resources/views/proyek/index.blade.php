@@ -11,6 +11,23 @@
             </div>
         @endif
 
+        <!-- Warning Information Card / Tutorial -->
+        <div class="bg-rose-500 rounded-2xl shadow-sm border border-rose-600 p-5 flex items-start gap-4">
+            <div class="flex-shrink-0 bg-white/20 p-2 rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div class="flex-1 text-white">
+                <h3 class="font-bold text-lg mb-2">Panduan Pengaturan Proyek</h3>
+                <ul class="list-disc list-inside text-white/90 text-sm leading-relaxed space-y-1 block">
+                    <li><strong>Mengaktifkan Bot WhatsApp:</strong> <a href="{{ route('tutorial') }}" class="font-bold underline hover:text-white transition-colors">tutorial disini</a></li>
+                    <li><strong>Ganti Mode Sandbox/Production:</strong> <a href="{{ route('tutorial') }}" class="font-bold underline hover:text-white transition-colors">tutorial disini</a></li>
+                    <li><strong>Ganti Fee ditanggung Customer/Merchant:</strong> <a href="{{ route('tutorial') }}" class="font-bold underline hover:text-white transition-colors">tutorial disini</a></li>
+                </ul>
+            </div>
+        </div>
+
         <div class="flex justify-between items-center">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Daftar Proyek</h1>
             <button @click="showModal = true" class="px-4 py-2 bg-blue-600 text-white rounded-xl font-bold text-sm shadow-sm hover:bg-blue-700 transition-colors">

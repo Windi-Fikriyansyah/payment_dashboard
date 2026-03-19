@@ -101,7 +101,7 @@ class PenarikanController extends Controller
             }
 
             // 4. Create Penarikan Record
-            $fee = 4000;
+            $fee = 6500;
             $net_amount = $amount - $fee;
             $penerima = "{$bank_account->bank_name} - {$bank_account->account_number} ({$bank_account->account_name})";
             $penarikan_id = DB::table('penarikan')->insertGetId([

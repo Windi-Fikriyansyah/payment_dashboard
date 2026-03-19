@@ -18,6 +18,10 @@ Route::get('/panduan', function () {
     return view('panduan');
 })->name('panduan');
 
+Route::get('/tutorial', function () {
+    return view('tutorial');
+})->name('tutorial');
+
 Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

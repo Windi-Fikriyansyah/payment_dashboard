@@ -25,9 +25,10 @@
             </div>
             <div class="flex-1 text-white">
                 <h3 class="font-bold text-lg mb-1">Informasi Penarikan</h3>
-                <p class="text-white/90 text-sm leading-relaxed">
-                    Penarikan diproses setiap malam pukul <strong>18.00 WIB - 19.00 WIB</strong>, jika penarikan dilakukan setelah jam tersebut, maka akan diproses keesokan harinya.
-                </p>
+                <div class="text-white/90 text-sm leading-relaxed space-y-1">
+                    <p>• Setiap penarikan dikenakan biaya admin sebesar <strong>Rp 6.500</strong>.</p>
+                    <p>• Penarikan diproses setiap malam pukul <strong>18.00 WIB - 19.00 WIB</strong>. Jika penarikan dilakukan setelah jam tersebut, maka akan diproses keesokan harinya.</p>
+                </div>
             </div>
         </div>
 
@@ -99,6 +100,22 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Jumlah Penarikan (Rp)</label>
                             <input type="number" name="jumlah" id="jumlah" min="10000" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 p-3 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="Min. 10.000" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Biaya Penarikan</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500 font-bold text-sm">Rp</span>
+                                <input type="text" class="w-full bg-gray-100 border border-gray-200 text-gray-900 text-sm rounded-xl p-3 pl-10 cursor-not-allowed font-bold" value="6.500,00" disabled>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Total Diterima</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-emerald-600 font-bold text-sm">Rp</span>
+                                <input type="text" id="display_total_terima" class="w-full bg-gray-100 border border-gray-200 text-emerald-600 text-sm rounded-xl p-3 pl-10 cursor-not-allowed font-bold" value="0,00" disabled>
+                            </div>
                         </div>
                     </div>
 
@@ -180,6 +197,19 @@
                 $('#modal-request').addClass('hidden');
             });
 
+            $('#jumlah').on('input', function() {
+                const jumlah = parseFloat($(this).val()) || 0;
+                const fee = 6500;
+                let totalTerima = jumlah - fee;
+                if (totalTerima < 0) totalTerima = 0;
+                
+                const formatted = new Intl.NumberFormat('id-ID', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(totalTerima);
+                $('#display_total_terima').val(formatted);
+            });
+
             // Form Submission
             $('#form-penarikan').on('submit', function(e) {
                 e.preventDefault();
@@ -205,6 +235,7 @@
                             });
                             $('#modal-request').addClass('hidden');
                             $('#form-penarikan')[0].reset();
+                            $('#display_total_terima').val('0,00');
                             $('.select2-modal').val(null).trigger('change');
                             location.reload();
                         } else {
