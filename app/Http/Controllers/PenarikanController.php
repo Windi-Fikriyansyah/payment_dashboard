@@ -21,11 +21,11 @@ class PenarikanController extends Controller
         $projects = DB::table('projects')
             ->where('user_id', $user_id)
             ->select([
-                'id', 
-                'nama',
-                'mode',
-                DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = \'production\' AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = \'production\' AND l.type = \'debit\')) as saldo')
-            ])
+            'id',
+            'nama',
+            'mode',
+            DB::raw('((SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN transactions t ON l.transaction_id = t.id WHERE l.project_id = projects.id AND t.status = \'success\' AND t.mode = \'production\' AND l.type = \'credit\') - (SELECT COALESCE(SUM(l.amount), 0) FROM ledgers l JOIN penarikan p ON l.penarikan_id = p.id WHERE l.project_id = projects.id AND p.status != \'Ditolak\' AND p.mode = \'production\' AND l.type = \'debit\')) as saldo')
+        ])
             ->get();
         $bank_accounts = DB::table('rekening_bank')->where('user_id', $user_id)->get(['id', 'bank_name', 'account_number', 'account_name']);
 
@@ -46,7 +46,7 @@ class PenarikanController extends Controller
         $user_id = Auth::id();
         $project_id = $request->project_id;
         $rekening_id = $request->rekening_bank_id;
-        $amount = (int) $request->jumlah;
+        $amount = (int)$request->jumlah;
 
         return DB::transaction(function () use ($user_id, $project_id, $rekening_id, $amount) {
             // 1. Lock the project to prevent race conditions on balance
@@ -95,7 +95,7 @@ class PenarikanController extends Controller
 
             if ($current_balance < $amount) {
                 return response()->json([
-                    'success' => false, 
+                    'success' => false,
                     'message' => 'Saldo tidak mencukupi. Saldo saat ini: Rp ' . number_format($current_balance, 2, ',', '.')
                 ], 422);
             }
@@ -153,35 +153,43 @@ class PenarikanController extends Controller
      */
     public function data()
     {
-        $penarikan = DB::table('penarikan')
-            ->where('user_id', Auth::id())
-            ->select(['id', 'jumlah', 'fee', 'total_terima', 'penerima', 'status', 'created_at']);
+        $user = Auth::user();
 
-        return DataTables::of($penarikan)
-            ->editColumn('jumlah', function($row) {
-                return 'Rp ' . number_format($row->jumlah, 2, ',', '.');
-            })
-            ->editColumn('fee', function($row) {
-                return 'Rp ' . number_format($row->fee, 2, ',', '.');
-            })
-            ->editColumn('total_terima', function($row) {
-                return 'Rp ' . number_format($row->total_terima, 2, ',', '.');
-            })
-            ->editColumn('created_at', function($row) {
-                return date('d M Y, H:i', strtotime($row->created_at));
-            })
-            ->editColumn('status', function($row) {
-                $status = strtolower($row->status);
-                if ($status === 'pending') {
-                    return '<span class="px-2.5 py-1 bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 rounded-lg text-xs font-bold uppercase tracking-wide">Pending</span>';
-                } elseif ($status === 'sukses') {
-                    return '<span class="px-2.5 py-1 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 rounded-lg text-xs font-bold uppercase tracking-wide">Sukses</span>';
-                } elseif ($status === 'ditolak') {
-                    return '<span class="px-2.5 py-1 bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400 rounded-lg text-xs font-bold uppercase tracking-wide">Ditolak</span>';
-                }
-                
-                return '<span class="px-2.5 py-1 bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded-lg text-xs font-bold uppercase tracking-wide">' . $row->status . '</span>';
-            })
+        $query = DB::table('penarikan')
+            ->select(['id', 'user_id', 'jumlah', 'fee', 'total_terima', 'penerima', 'status', 'created_at']);
+
+        // Jika bukan admin → filter by user_id
+        if ($user->role !== 'admin') {
+            $query->where('user_id', $user->id);
+        }
+
+        return DataTables::of($query)
+            ->editColumn('jumlah', function ($row) {
+            return 'Rp ' . number_format($row->jumlah, 2, ',', '.');
+        })
+            ->editColumn('fee', function ($row) {
+            return 'Rp ' . number_format($row->fee, 2, ',', '.');
+        })
+            ->editColumn('total_terima', function ($row) {
+            return 'Rp ' . number_format($row->total_terima, 2, ',', '.');
+        })
+            ->editColumn('created_at', function ($row) {
+            return date('d M Y, H:i', strtotime($row->created_at));
+        })
+            ->editColumn('status', function ($row) {
+            $status = strtolower($row->status);
+            if ($status === 'pending') {
+                return '<span class="px-2.5 py-1 bg-amber-100 text-amber-600 rounded-lg text-xs font-bold uppercase">Pending</span>';
+            }
+            elseif ($status === 'sukses') {
+                return '<span class="px-2.5 py-1 bg-emerald-100 text-emerald-600 rounded-lg text-xs font-bold uppercase">Sukses</span>';
+            }
+            elseif ($status === 'ditolak') {
+                return '<span class="px-2.5 py-1 bg-rose-100 text-rose-600 rounded-lg text-xs font-bold uppercase">Ditolak</span>';
+            }
+
+            return '<span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold uppercase">' . $row->status . '</span>';
+        })
             ->rawColumns(['status'])
             ->make(true);
     }
