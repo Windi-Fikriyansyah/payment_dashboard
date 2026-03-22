@@ -76,7 +76,7 @@ class TransactionController extends Controller
 
             $response = Http::withHeaders([
                 'X-API-Key' => $project->api_key,
-            ])->timeout(30)->post('https://app.linkbayar.my.id/api/checkout-session', $body);
+            ])->timeout(30)->post('http://127.0.0.1:3005/api/checkout-session', $body);
 
             $responseBody = $response->json();
             $statusCode = $response->status();

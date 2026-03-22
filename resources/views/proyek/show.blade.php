@@ -96,6 +96,21 @@
                             </form>
                         </div>
                     </div>
+                    <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-900/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 my-2">
+                        <span class="text-gray-500 font-medium whitespace-nowrap">Tampil Hanya QRIS di WA:</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm font-bold {{ $project->tampil_qris ? 'text-emerald-600' : 'text-gray-500' }}">
+                                {{ $project->tampil_qris ? 'Ya' : 'Tidak' }}
+                            </span>
+                    <form action="{{ route('proyek.update', $project->encrypted_id) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="tampil_qris" value="{{ $project->tampil_qris ? 0 : 1 }}">
+                                <button type="submit" class="text-xs text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 px-3 py-1.5 rounded-lg font-bold hover:scale-105 transition-transform active:scale-95 shadow-md">
+                                    Switch
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                     <div class="flex flex-col gap-2">
                         <span class="text-gray-500 font-medium">Webhook URL:</span>
                         <div class="p-3 bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-xl text-sm break-all font-mono">
@@ -280,6 +295,15 @@
                                     <option value="1" {{ $project->fee_by_merchant ? 'selected' : '' }}>Ya</option>
                                 </select>
                                 <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Aktifkan jika Anda ingin menanggung fee transaksi (defaultnya ditanggung oleh customer).</p>
+                            </div>
+
+                            <div>
+                                <label for="tampil_qris_edit" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tampil QRIS di WA</label>
+                                <select name="tampil_qris" id="tampil_qris_edit" class="mt-2 block w-full bg-gray-50 dark:bg-gray-900/50 border border-gray-300 dark:border-gray-600 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900 dark:text-white px-4 py-3">
+                                    <option value="0" {{ !$project->tampil_qris ? 'selected' : '' }}>Tidak</option>
+                                    <option value="1" {{ $project->tampil_qris ? 'selected' : '' }}>Ya</option>
+                                </select>
+                                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Aktifkan jika Anda ingin pelanggan dapat melihat QRIS langsung di WhatsApp.</p>
                             </div>
 
                             <div>

@@ -56,6 +56,7 @@ class ProjectController extends Controller
             'total_transaksi' => 0,
             'saldo_tertunda' => 0,
             'fee_by_merchant' => false,
+            'tampil_qris' => false,
             'notifikasi_ke' => '-',
             'bot_whatsapp' => $request->has('bot_whatsapp') ? (bool)$request->bot_whatsapp : false,
             'no_whatsapp' => $request->no_whatsapp,
@@ -199,6 +200,29 @@ class ProjectController extends Controller
 
         if ($request->has('fee_by_merchant')) {
             $updateData['fee_by_merchant'] = $request->fee_by_merchant;
+        }
+
+        if ($request->has('tampil_qris')) {
+            $updateData['tampil_qris'] = $request->tampil_qris;
+
+            // Jika di-set ke TRUE (1), cek apakah QRIS sudah aktif di project_payment_methods
+            if ($request->tampil_qris == 1 || $request->tampil_qris === true) {
+                $qrisMethod = DB::table('payment_methods')->where('code', 'qris')->first();
+                if ($qrisMethod) {
+                    $exists = DB::table('project_payment_methods')
+                        ->where('project_id', $id)
+                        ->where('payment_method_id', $qrisMethod->id)
+                        ->exists();
+
+                    if (!$exists) {
+                        DB::table('project_payment_methods')->insert([
+                            'project_id' => $id,
+                            'payment_method_id' => $qrisMethod->id,
+                            'created_at' => now(),
+                        ]);
+                    }
+                }
+            }
         }
 
         if ($request->has('webhook_url') && !$request->has('nama')) {
