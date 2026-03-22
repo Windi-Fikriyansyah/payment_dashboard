@@ -86,7 +86,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                Terakhir diperbarui: 17 Maret 2026
+                Terakhir diperbarui: 22 Maret 2026
             </div>
         </div>
     </section>
@@ -186,11 +186,17 @@
                                 </div>
                                 <span class="text-sm font-medium">Membatalkan transaksi yang belum dibayar</span>
                             </div>
-                            <div class="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-900/30 sm:col-span-2">
+                            <div class="flex items-center gap-3 p-4 bg-amber-50 dark:bg-amber-900/10 rounded-2xl border border-amber-100 dark:border-amber-900/30">
                                 <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center shrink-0">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
                                 </div>
                                 <span class="text-sm font-medium">Mengecek status/detail transaksi</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-indigo-50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100 dark:border-indigo-900/30">
+                                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                </div>
+                                <span class="text-sm font-medium">Mendapatkan daftar metode pembayaran aktif</span>
                             </div>
                         </div>
                     </div>
@@ -499,6 +505,71 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- ===== E. Mendapatkan Metode Pembayaran ===== -->
+                        <div class="border-t border-gray-100 dark:border-gray-700 pt-8">
+                            <div class="flex flex-wrap items-center gap-3 mb-4">
+                                <span class="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-bold uppercase tracking-wider">GET</span>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">E. Mendapatkan Metode Pembayaran</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">Gunakan API ini untuk mendapatkan daftar metode pembayaran yang aktif dan rincian biaya masing-masing.</p>
+                            
+                            <div class="space-y-4">
+                                <div class="code-block bg-gray-950 rounded-2xl p-4 sm:p-6 overflow-auto">
+                                    <div class="code-font text-xs text-gray-400 mb-1">// Method: GET</div>
+                                    <div class="code-font text-xs sm:text-sm text-emerald-400 break-all">https://app.linkbayar.my.id/api/get_metode_pembayaran</div>
+                                </div>
+                                <div class="code-block bg-gray-950 rounded-xl p-4 overflow-auto">
+                                    <div class="code-font text-xs text-gray-400 mb-1">// Headers</div>
+                                    <div class="code-font text-xs"><span class="text-blue-400">X-API-Key:</span> <span class="text-emerald-400">api_key_anda</span></div>
+                                </div>
+
+                                <div>
+                                    <h4 class="font-bold text-gray-900 dark:text-white mb-3">Response Sukses</h4>
+                                    <div class="code-block bg-gray-950 p-4 sm:p-6 rounded-2xl overflow-auto">
+<pre class="code-font text-xs text-emerald-400">{
+    "methods": [
+        {
+            "payment_method": "qris",
+            "payment_name": "QRIS",
+            "payment_image": "https://ik.imagekit.io/tg7tsodt8/about/bank/images.png",
+            "fee_flat": 310,
+            "fee_percent": 0.007
+        },
+        {
+            "payment_method": "bri_va",
+            "payment_name": "BRI Virtual Account",
+            "payment_image": "https://ik.imagekit.io/tg7tsodt8/about/bank/BR.png",
+            "fee_flat": 4000,
+            "fee_percent": 0
+        },
+        {
+            "payment_method": "bni_va",
+            "payment_name": "BNI Virtual Account",
+            "payment_image": "https://ik.imagekit.io/tg7tsodt8/about/bank/I1.png",
+            "fee_flat": 4000,
+            "fee_percent": 0
+        },
+        {
+            "payment_method": "mandiri_va",
+            "payment_name": "Mandiri Virtual Account",
+            "payment_image": "https://ik.imagekit.io/tg7tsodt8/about/bank/MV.png",
+            "fee_flat": 4500,
+            "fee_percent": 0
+        },
+        {
+            "payment_method": "bca_va",
+            "payment_name": "BCA Virtual Account",
+            "payment_image": "https://ik.imagekit.io/tg7tsodt8/about/bank/Logo%20BCA_Biru.png",
+            "fee_flat": 5500,
+            "fee_percent": 0
+        }
+    ]
+}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -594,27 +665,26 @@
             <!-- 7. Bantuan -->
             <!-- ======================== -->
             <div id="bantuan" class="doc-section bg-gradient-to-br from-slate-900 to-blue-900 rounded-3xl overflow-hidden shadow-xl relative">
-                <div class="hero-shape top-0 right-0 w-64 h-64 bg-blue-500/30"></div>
-                <div class="p-6 sm:p-8 lg:p-12 text-center relative z-10">
-                    <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                        </svg>
-                    </div>
-                    <h3 class="text-2xl font-bold text-white mb-3">7. Bantuan</h3>
-                    <p class="text-blue-200 mb-8 max-w-lg mx-auto">Jika ada kendala, hubungi tim teknis kami:</p>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="mailto:support@linkbayar.my.id" class="px-6 sm:px-8 py-4 bg-white text-gray-900 rounded-2xl font-bold hover:bg-gray-100 transition-all shadow-xl hover:-translate-y-1 flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                            support@linkbayar.my.id
-                        </a>
-                        <a href="https://app.linkbayar.my.id" class="px-6 sm:px-8 py-4 bg-white/10 text-white border border-white/20 rounded-2xl font-bold hover:bg-white/20 transition-all flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-                            linkbayar.my.id
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <div class="hero-shape top-0 right-0 w-64 h-64 bg-blue-500/30"></div>
+    <div class="p-6 sm:p-8 lg:p-12 text-center relative z-10">
+        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-white mb-3">7. Bantuan</h3>
+        <p class="text-blue-200 mb-8 max-w-lg mx-auto">Jika ada kendala, hubungi tim teknis kami melalui WhatsApp:</p>
+        <div class="flex justify-center">
+            <a href="https://wa.me/6289678386070" target="_blank" class="px-6 sm:px-8 py-4 bg-green-500 text-white rounded-2xl font-bold hover:bg-green-600 transition-all shadow-xl flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.52 3.48a11.05 11.05 0 00-15.64 15.64l-1.7 5.03 5.17-1.71a11.04 11.04 0 0012.17-12.17zm-8.52 15c-1.87 0-3.61-.5-5.14-1.37l-.37-.22-3.06 1 1-3.05-.24-.39A9.997 9.997 0 0112 22c5.52 0 10-4.48 10-10s-4.48-10-10-10-10 4.48-10 10c0 1.83.5 3.53 1.37 5.02l.25.37-1 3.06 3.06-1 .39.24A9.98 9.98 0 0012 20z"/>
+                    <path d="M16.1 13.3c-.22-.11-1.3-.64-1.5-.72s-.35-.11-.5.11-.57.72-.7.87c-.13.15-.26.17-.48.06-.22-.11-.93-.34-1.77-1.09-.65-.58-1.09-1.3-1.22-1.52-.13-.22-.01-.34.1-.45.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.07-.15.03-.28-.02-.39-.05-.11-.5-1.2-.68-1.64-.18-.43-.36-.37-.5-.37s-.28-.01-.43-.01c-.15 0-.39.06-.59.28s-.77.75-.77 1.83.79 2.12.9 2.27c.11.15 1.55 2.37 3.76 3.32.53.23.94.37 1.26.48.53.19 1.02.16 1.4.1.43-.07 1.3-.53 1.48-1.04.18-.51.18-.94.13-1.04-.05-.1-.18-.16-.39-.27z"/>
+                </svg>
+                Chat WhatsApp
+            </a>
+        </div>
+    </div>
+</div>
 
         </div>
     </section>
