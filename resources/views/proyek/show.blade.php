@@ -97,7 +97,10 @@
                         </div>
                     </div>
                     <div class="flex justify-between items-center bg-gray-50 dark:bg-gray-900/50 p-3 rounded-2xl border border-gray-100 dark:border-gray-700 my-2">
-                        <span class="text-gray-500 font-medium whitespace-nowrap">Tampil Hanya QRIS di WA:</span>
+                        <div class="flex flex-col">
+                            <span class="text-gray-500 font-medium whitespace-nowrap">Tampil Hanya QRIS di WA:</span>
+                            <span class="text-[10px] text-rose-500 font-bold italic">bisnis offline yang butuh qris dinamis</span>
+                        </div>
                         <div class="flex items-center gap-3">
                             <span class="text-sm font-bold {{ $project->tampil_qris ? 'text-emerald-600' : 'text-gray-500' }}">
                                 {{ $project->tampil_qris ? 'Ya' : 'Tidak' }}
